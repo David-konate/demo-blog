@@ -1,0 +1,90 @@
+:root {
+  --primary-color: #1cb5e0;
+  --secondary-color: #000046;
+  --gradient-bg: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  --text-color: #333;
+  --link-color: #007bff;
+  --link-hover-color: #0056b3;
+  --font-family: 'Inter', sans-serif;
+  --background-color: #f9f9f9;
+  --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --input-background: #fff;
+  --border-color: #ccc;
+  --focus-background: #eef7ff;
+  --button-text-color: #fff;
+  --disabled-background: #e0e0e0;
+  --disabled-text-color: #a0a0a0;
+  --overlay-color: rgba(0, 0, 0, 0.5);
+  --modal-background: #fff;
+  --modal-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* Réinitialisation des styles de base */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 20px;
+  line-height: 1.75;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* Styles des titres */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  line-height: 1.3;
+}
+
+h1 { font-size: 3.5rem; }
+h2 { font-size: 2.8rem; }
+h3 { font-size: 2.4rem; }
+h4 { font-size: 2rem; }
+h5 { font-size: 1.7rem; }
+h6 { font-size: 1.5rem; }
+
+/* Styles pour les paragraphes et les liens */
+p, ul, li, a {
+  font-size: 1.25rem;
+  line-height: 1.75;
+  color: var(--text-color);
+}
+
+/* Liens */
+a {
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+/* Conteneur principal */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Contenu principal */
+.content {
+  flex-grow: 1;
+}
+
+/* Footer */
+footer {
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+  background: var(--secondary-color);
+  color: white;
+}
