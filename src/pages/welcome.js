@@ -121,7 +121,6 @@ const pageStyles = {
   color: "#232129",
   padding: "96px 24px", // Ajout d'un peu d'espace pour les petits écrans
   fontFamily: "-apple-system, Roboto, sans-serif, serif",
-  background: "white",
   transition: "all 0.3s ease-in-out",
   display: "flex",
   justifyContent: "center", // Centrer horizontalement

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, navigate } from "@reach/router";
-import useArticles from "../../services/articleService";
+import useArticles from "../services/articleService";
 
-import { SEO } from "../components/seo";
+import { SEO } from "./components/seo";
 import Showdown from "showdown";
 export function useMedia(query) {
   const [matches, setMatches] = useState(false);

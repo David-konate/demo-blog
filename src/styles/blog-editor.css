@@ -4,6 +4,18 @@
     gap: 2rem;
     padding: 20px;
     box-sizing: border-box;
+    padding-top: 4rem;
+}
+/* Quand l'écran est plus petit que md (768px) */
+@media (max-width: 767px) {
+  .blog-editor-preview-container {
+    flex-direction: column; /* Change l'alignement pour mettre en colonne */
+  }
+
+  .blog-editor,
+  .blog-preview {
+    width: 100%; /* Assurez-vous que les éléments prennent toute la largeur */
+  }
 }
 
 .blog-editor,
@@ -430,5 +442,20 @@
     content: "";
     display: table;
     clear: both;
+  }
+  .mobile-view .blog-editor {
+    width: 100%;
+  }
+  
+  .mobile-view .blog-preview {
+    display: none; /* Cache la preview sur mobile */
+  }
+  
+  .tablet-view .blog-editor {
+    width: 70%;
+  }
+  
+  .tablet-view .blog-preview {
+    width: 30%;
   }
   

@@ -31,7 +31,22 @@ const ArticlePreview = () => {
 
   return (
     <div className="article-preview">
-      <header className="article-preview-header">
+      <header
+        className="article-preview-header"
+        style={
+          articlePreview.image
+            ? {
+                backgroundImage: `url(${articlePreview.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : {
+                backgroundColor: "#f4f4f4",
+                padding: "20px",
+                textAlign: "center",
+              }
+        }
+      >
         <div className="article-preview-overlay">
           <h1
             className="article-preview-title"

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "gatsby";
+
 import {
   FaBasketballBall,
   FaExternalLinkAlt,
@@ -8,198 +9,78 @@ import {
   FaTimes,
   FaLinkedin,
 } from "react-icons/fa";
-import styled from "styled-components";
+
+import "../../styles/global.css"; // Assurez-vous que le fichier global.css est bien importé
 
 // Composant Navbar
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Nav>
-      <Logo to="/">Mon Blog</Logo>
-      <MenuIcon onClick={() => setIsOpen(!isOpen)}>
+    <nav className="navbar">
+      <Link to="/" className="logo">
+        Mon Blog
+      </Link>
+      <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes size={30} /> : <FaBars size={30} />}
-      </MenuIcon>
-      <NavLinks isOpen={isOpen}>
-        <NavLink to="/" style={styles.navTitles}>
+      </div>
+      <div className={`nav-links ${isOpen ? "open" : ""}`}>
+        <Link to="/" className="nav-link">
           Accueil
-        </NavLink>
-        <NavLink to="/blog/blog-list" style={styles.navTitles}>
+        </Link>
+        <Link to="/blog-list" className="nav-link">
           Articles
-        </NavLink>
-        <NavLink to="/blog/blog-post-creator" style={styles.navTitles}>
+        </Link>
+        <Link to="/blog-post-creator" className="nav-link">
           Creation
-        </NavLink>
+        </Link>
 
-        <SocialIcons>
-          <SocialIcon
+        <div className="social-icons">
+          <a
             href="https://www.david-konate.fr"
             title="Mon site web"
             target="_blank"
             rel="noopener noreferrer"
+            className="social-icon"
           >
             <FaExternalLinkAlt size={20} />
-          </SocialIcon>
+          </a>
 
-          <SocialIcon
+          <a
             href="https://github.com/David-konate"
             title="Mon GitHub"
             target="_blank"
             rel="noopener noreferrer"
+            className="social-icon"
           >
             <FaGithub size={20} />
-          </SocialIcon>
+          </a>
 
-          <SocialIcon
+          <a
             href="https://www.linkedin.com/in/david-konate/"
             title="Mon LinkedIn"
             target="_blank"
             rel="noopener noreferrer"
+            className="social-icon"
           >
             <FaLinkedin size={20} />
-          </SocialIcon>
+          </a>
 
-          <SocialIcon
+          <a
             href="https://ballnconnect.com/"
             title="Site sur lequel ce projet a été déployé"
             target="_blank"
             rel="noopener noreferrer"
+            className="social-icon"
           >
             <FaBasketballBall size={20} />
-          </SocialIcon>
-        </SocialIcons>
+          </a>
+        </div>
 
-        <ContactBtn>Contactez-moi</ContactBtn>
-      </NavLinks>
-    </Nav>
+        <button className="contact-btn">Contactez-moi</button>
+      </div>
+    </nav>
   );
 };
 
 export default Navbar;
-
-// 🎨 Styles avec styled-components
-const Nav = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(90deg, #1cb5e0, #000046);
-  padding: 20px 40px;
-  color: white;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  transition: all 0.3s ease-in-out;
-`;
-
-const Logo = styled(Link)`
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  text-decoration: none;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-family: "Roboto", sans-serif; /* Police moderne */
-`;
-
-const MenuIcon = styled.div`
-  cursor: pointer;
-  display: none;
-  color: white;
-  transition: transform 0.3s ease;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-
-  &:hover {
-    transform: rotate(90deg); /* Rotation de l'icône */
-  }
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
-    flex-direction: column;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Arrière-plan sombre transparent */
-    padding: 20px;
-    border-radius: 10px;
-  }
-`;
-
-const NavLink = styled(Link)`
-  color: white;
-  margin: 0 20px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 18px;
-  letter-spacing: 1px;
-  text-transform: capitalize;
-  font-family: "Roboto", sans-serif;
-
-  &:hover {
-    color: #00d2ff; /* Accent bleu clair futuriste */
-    font-weight: 800;
-    letter-spacing: 2px;
-    transition: color 0.3s ease, letter-spacing 0.3s ease;
-  }
-
-  @media (max-width: 768px) {
-    margin: 10px 0;
-  }
-`;
-
-const SocialIcons = styled.div`
-  display: flex;
-  gap: 15px;
-  margin-left: 20px;
-
-  @media (max-width: 768px) {
-    margin-top: 15px;
-  }
-`;
-
-const SocialIcon = styled.a`
-  color: white;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #00d2ff; /* Accent bleu futuriste sur hover */
-    transform: scale(1.1); /* Agrandissement des icônes */
-  }
-`;
-
-const ContactBtn = styled.button`
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  background-image: linear-gradient(
-    90deg,
-    #00d2ff,
-    #005c78
-  ); /* Dégradé de bleu futuriste */
-  border-radius: 25px;
-  padding: 12px 30px;
-  align-items: center;
-  margin-left: 30px;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05); /* Agrandissement au survol */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre douce au survol */
-  }
-`;
-
-const styles = {
-  navTitles: {
-    marginLeft: 35,
-  },
-};

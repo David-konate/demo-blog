@@ -1,6 +1,11 @@
 import axios from "axios";
 
-export default axios.create({
-  // baseURL: "https://ballnconnect-backend.herokuapp.com/",
-  baseURL: "http://localhost:3000/",
+const trackerApi = axios.create({
+  baseURL: "http://localhost:3000/api",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
 });
+
+export default trackerApi;

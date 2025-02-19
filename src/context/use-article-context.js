@@ -18,6 +18,10 @@ export const ArticleProvider = ({ children }) => {
     articlePreview,
     setArticlePreview,
     fetchArticles,
+    deleteArticle,
+    updateArticle,
+    categoriesCount,
+    getArticleCountByCategory,
   } = useArticles();
 
   // Vérification que saveArticle et les autres données sont bien chargées avant de rendre les enfants
@@ -49,6 +53,10 @@ export const ArticleProvider = ({ children }) => {
         articlePreview,
         setArticlePreview,
         fetchArticles,
+        deleteArticle,
+        updateArticle,
+        categoriesCount,
+        getArticleCountByCategory,
       }}
     >
       {children}

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { marked } from "marked";
 import trackerApi from "../api/tracker";
-
+import { navigate } from "@reach/router";
 const useArticles = () => {
+  const [categoriesCount, setCategoriesCount] = useState([]);
   const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,60 +15,68 @@ const useArticles = () => {
     fetchArticles();
   }, []);
 
-  const fetchArticles = async () => {
+  const fetchArticles = async (page = 1, category = "") => {
     setLoading(true);
+    const cacheKey = `articles_page_${page}_category_${category}`;
+
     try {
-      // Vérifie si l'on est dans l'environnement du client
-      // if (typeof window !== "undefined") {
-      //   // Vérifie si les articles sont déjà en cache (sessionStorage)
-      //   const cachedArticles = sessionStorage.getItem("articles");
-      //   if (cachedArticles) {
-      //     setArticles(JSON.parse(cachedArticles));
-      //     setLoading(false);
-      //     return;
-      //   }
-      // }
-
-      // Sinon, récupère les articles depuis l'API
-      const response = await fetch("http://localhost:3000/allArticles");
-      const data = await response.json();
-
-      const articlesWithContent = await Promise.all(
-        data.data.map(async (article) => {
-          const markdownResponse = await fetch(article.url);
-          const content = await markdownResponse.text();
-
-          const extractMetadata = (regex) => {
-            const match = content.match(regex);
-            return match ? match[1] : null;
-          };
-
-          const formattedArticle = {
-            public_id: article.public_id,
-            title:
-              extractMetadata(/title:\s*"?(.+?)"?$/m) || "Titre non trouvé",
-            author:
-              extractMetadata(/author:\s*"?(.+?)"?$/m) || "Auteur non trouvé",
-            date: extractMetadata(/date:\s*"?(.+?)"?$/m) || "Date non trouvée",
-            category:
-              extractMetadata(/category:\s*"?(.+?)"?$/m) ||
-              "Catégorie non trouvée",
-            slug: extractMetadata(/slug:\s*"?(.+?)"?$/m) || "Slug non trouvé",
-            image:
-              extractMetadata(/image:\s*"?(.+?)"?$/m) || "Image non trouvée",
-            content: marked(content), // Convertit le Markdown en HTML
-          };
-
-          return formattedArticle;
-        })
+      // Requête API
+      const queryParams = new URLSearchParams({ page, category }).toString();
+      const response = await fetch(
+        `http://localhost:3000/api/articles?${queryParams}`
       );
 
-      // Stocker en cache
-      sessionStorage.setItem("articles", JSON.stringify(articlesWithContent));
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des articles.");
+      }
 
+      const data = await response.json();
+
+      // Récupération et traitement du contenu Markdown
+      const articlesWithContent = await Promise.all(
+        data.data.map(async (article) => {
+          console.log(article);
+          try {
+            if (!article.fileUrl) {
+              console.warn(
+                `⚠️ Pas de fichier Markdown pour l'article ${article.slug}`
+              );
+              return { ...article, content: "Contenu indisponible" };
+            }
+            const content = await fetch(article.fileUrl).then((res) =>
+              res.text()
+            );
+            const extract = (regex) =>
+              content.match(regex)?.[1] || "Non spécifié";
+
+            return {
+              public_id: article.public_id,
+              title: extract(/title:\s*"?(.+?)"?$/m),
+              author: extract(/author:\s*"?(.+?)"?$/m),
+              date: extract(/date:\s*"?(.+?)"?$/m),
+              category: extract(/category:\s*"?(.+?)"?$/m),
+              slug: extract(/slug:\s*"?(.+?)"?$/m),
+              image: extract(/image:\s*"?(.+?)"?$/m),
+              content: marked(content),
+            };
+          } catch (error) {
+            console.error(
+              `❌ Erreur lors du chargement du contenu Markdown de ${article.slug}`,
+              error
+            );
+            return {
+              ...article,
+              content: "Erreur lors du chargement du contenu.",
+            };
+          }
+        })
+      );
+      // Mise en cache et mise à jour de l'état
+      sessionStorage.setItem(cacheKey, JSON.stringify(articlesWithContent));
       setArticles(articlesWithContent);
-    } catch (err) {
-      setError(err);
+    } catch (error) {
+      console.error("❌ Erreur lors de la récupération des articles :", error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -186,23 +195,21 @@ const useArticles = () => {
   ${content}`;
   };
 
-  // Enregistrer un article
   const saveArticle = async (articleData) => {
     console.log({ articleData });
+
     try {
       const uniqueSlug = await checkOrGenerateSlug(articleData.slug);
 
-      // Mise à jour des métadonnées avec le slug unique
       const updatedArticleData = {
         ...articleData,
         slug: uniqueSlug,
       };
 
-      console.log(updatedArticleData.image);
+      console.log("Image avant sauvegarde :", updatedArticleData.image);
       const imageTitre = await saveImages(updatedArticleData);
-      console.log(imageTitre);
+      console.log("Image enregistrée :", imageTitre);
 
-      // Vérification si l'image a été correctement récupérée
       if (!imageTitre) {
         throw new Error("L'image n'a pas été correctement enregistrée");
       }
@@ -213,30 +220,25 @@ const useArticles = () => {
         image: imageTitre,
       });
 
-      // Création d'un objet Blob avec le contenu Markdown
+      console.log("Contenu Markdown généré :", markdownContent);
+
+      // Création d'un Blob
       const markdownBlob = new Blob([markdownContent], {
         type: "text/markdown",
       });
 
-      // Création d'un objet File
-      const markdownFile = new File([markdownBlob], `${uniqueSlug}.md`, {
-        type: "text/markdown",
-      });
-
-      // Mise à jour des données finales avec le fichier Markdown
+      // Création d'un objet FormData
       const formData = new FormData();
-      formData.append("markdown", markdownFile); // Ajout du fichier Markdown
+      formData.append("markdown", markdownBlob, `${uniqueSlug}.md`);
 
-      // Envoi des données avec le fichier Markdown
-      const response = await trackerApi.post(
-        `save/${uniqueSlug}`, // Utilisation du slug unique dans l'URL
-        formData, // Envoi du FormData contenant le fichier
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Pour envoyer un fichier
-          },
-        }
-      );
+      console.log("FormData avant envoi :", [...formData.entries()]);
+
+      // Envoi de la requête
+      const response = await trackerApi.post(`save/${uniqueSlug}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 200) {
         console.log("Article enregistré avec succès :", response.data);
@@ -247,6 +249,87 @@ const useArticles = () => {
     } catch (error) {
       console.error("Erreur lors de l'enregistrement de l'article :", error);
       throw error;
+    } finally {
+      navigate("/blog-list/");
+    }
+  };
+
+  // Supprimer un article par son slug
+  const deleteArticle = async (slug) => {
+    try {
+      const response = await trackerApi.delete(`article/${slug}`);
+      if (response.status === 200) {
+        console.log("Article supprimé avec succès");
+        fetchArticles(); // Rafraîchir la liste après suppression
+      } else {
+        throw new Error("Erreur lors de la suppression de l'article");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'article :", error);
+      throw error;
+    } finally {
+      navigate("/app/allArticles/");
+    }
+  };
+
+  // Mettre à jour un article existant
+  const updateArticle = async (updatedData) => {
+    console.log("Updating article with data:", updatedData);
+    try {
+      // Sauvegarde de l’image titre uniquement si elle n’est pas déjà une URL Cloudinary
+      let imageTitre = updatedData.image;
+
+      if (!imageTitre.startsWith("https://res.cloudinary.com/")) {
+        imageTitre = await saveImages(updatedData);
+      } else {
+        console.log(
+          "L'image provient déjà de Cloudinary, aucune mise à jour nécessaire."
+        );
+      }
+
+      // Génération du contenu Markdown
+      const markdownContent = createMarkdown({
+        ...updatedData,
+        image: imageTitre,
+      });
+
+      // Création d'un objet Blob avec le contenu Markdown
+      const markdownBlob = new Blob([markdownContent], {
+        type: "text/markdown",
+      });
+
+      // Création d'un objet File
+      const markdownFile = new File([markdownBlob], `${updatedData.slug}.md`, {
+        type: "text/markdown",
+      });
+
+      // Mise à jour des données avec le fichier Markdown
+      const formData = new FormData();
+      formData.append("markdown", markdownFile); // Ajout du fichier Markdown
+
+      // Envoi des données à l'API pour la mise à jour
+      const response = await trackerApi.put(
+        `update/${updatedData.slug}`, // Utilisation du slug actuel pour l'URL
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Article mis à jour avec succès");
+        fetchArticles(); // Rafraîchir la liste des articles
+        return response.data;
+      } else {
+        throw new Error("Erreur lors de la mise à jour de l'article");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'article :", error);
+      throw error;
+    } finally {
+      navigate("/app/allArticles/");
     }
   };
 
@@ -307,56 +390,15 @@ const useArticles = () => {
     }
   };
 
-  // Générer le contenu Markdown
-  const generateMarkdown = (metadata) => {
-    // Générer la section "metadata" en haut du fichier
-    const metadataString = `---
-    title: ${metadata.title}
-    author: ${metadata.author}
-    date: ${metadata.date}
-    category: "${metadata.category || ""}"
-    slug: "${metadata.slug || ""}"
-    image: "${metadata.image || ""}"
-    cardImage: "${metadata.cardImage || ""}"
-    sections:
-    ${metadata.sections
-      .map(
-        (section, index) => `  - text: "${section.text || ""}"
-        index: ${index}
-        image: "${section.image || ""}"
-        position: { x: ${section.position?.x || "null"}, y: ${
-          section.position?.y || "null"
-        } }
-        size: { width: ${section.size?.width || "100%"}, height: ${
-          section.size?.height || "null"
-        } }`
-      )
-      .join("\n")}
-    ---`;
-
-    // Générer le contenu détaillé des sections
-    const sectionsContent = metadata.sections
-      .map((section, index) => {
-        const imageName = section.image || "";
-        const imageDetails =
-          section.image && section.position && section.size
-            ? `\n* Position : (${section.position.x || "null"}, ${
-                section.position.y || "null"
-              })\n* Dimensions : ${section.size.width || "null"}x${
-                section.size.height || "null"
-              }`
-            : "";
-
-        return `### Section ${index + 1}
-    
-    ${imageName ? `![Image de la section](${imageName})` : ""}
-    ${imageDetails}
-    ${section.text || ""}`;
-      })
-      .join("\n\n");
-
-    // Retourner le contenu Markdown complet
-    return `${metadataString}\n\n${sectionsContent}`;
+  const getArticleCountByCategory = async () => {
+    try {
+      const response = await trackerApi.get("articles/count-by-category");
+      if (response.status === 200) {
+        setCategoriesCount(response.data.data); // Contient le nombre d'articles par catégorie
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des catégories:", error);
+    }
   };
 
   return {
@@ -369,10 +411,13 @@ const useArticles = () => {
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
     checkOrGenerateSlug, // Fonction pour vérifier ou générer un slug unique
-    generateMarkdown, // Fonction pour générer le contenu markdown complet d'un article
     articlePreview,
     setArticlePreview,
     fetchArticles,
+    deleteArticle,
+    updateArticle,
+    categoriesCount,
+    getArticleCountByCategory,
   };
 };
 
