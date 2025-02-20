@@ -53,3 +53,5 @@ export const SEO = ({ title, description, lang, children, slug }) => {
     </>
   );
 };
+
+export default SEO;

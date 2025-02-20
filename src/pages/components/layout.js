@@ -4,13 +4,15 @@ import Footer from "./Footer";
 import "../../styles/global.css"; // Assure-toi d'inclure tes styles globaux
 
 export function useMedia(query) {
-  const [matches, setMatches] = useState(
-    () => window.matchMedia(query).matches
-  );
+  const [matches, setMatches] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") return; // Évite d'exécuter le code côté serveur
+
     const media = window.matchMedia(query);
     const listener = () => setMatches(media.matches);
+
+    setMatches(media.matches); // Met à jour l'état initial
     media.addEventListener("change", listener);
 
     return () => media.removeEventListener("change", listener);

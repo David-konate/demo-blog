@@ -5,20 +5,6 @@ import Layout from "./components/layout";
 import { SEO } from "./components/seo";
 import Showdown from "showdown";
 import "../styles/blog-post.css";
-export function useMedia(query) {
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    const listener = () => setMatches(media.matches);
-    media.addEventListener("change", listener);
-    setMatches(media.matches);
-
-    return () => media.removeEventListener("change", listener);
-  }, [query]);
-
-  return matches;
-}
 
 const BlogPost = () => {
   Showdown.extension("size-images", function () {
@@ -50,7 +36,6 @@ const BlogPost = () => {
     return location.state?.slug || null;
   });
   console.log(slug);
-  const isLaptop = useMedia("(min-width: 1225px)");
 
   useEffect(() => {
     if (slug) {

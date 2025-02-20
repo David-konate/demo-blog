@@ -1,9 +1,9 @@
 import React from "react";
-import { useArticleContext } from "../../context/use-article-context";
 import Showdown from "showdown";
+import useArticles from "../../services/articleService";
 
 const ArticlePreview = () => {
-  const { articlePreview } = useArticleContext();
+  const { articlePreview } = useArticles();
 
   if (!articlePreview) return <p>Aucun aperçu disponible</p>;
   console.log("Contenu de l'aperçu:", articlePreview.content);

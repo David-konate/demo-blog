@@ -5,10 +5,10 @@ import Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import ReactMde from "react-mde";
 import MarkdownInfo from "./MarkdownInfo";
-import { useArticleContext } from "../../context/use-article-context";
+import useArticles from "../../services/articleService";
 
 const CreatePost = () => {
-  const { saveArticle, setArticlePreview } = useArticleContext();
+  const { saveArticle, setArticlePreview } = useArticles();
 
   const [selectedTab, setSelectedTab] = useState("write");
 
