@@ -116,13 +116,16 @@ const CreatePost = () => {
           saveArticle({ ...values, content: markdown });
         }}
         enableReinitialize
+        validateOnBlur={true}
+        validateOnChange={true}
       >
-        {({ setFieldValue, values, errors, touched }) => (
+        {({ setFieldValue, values, errors, touched, setTouched }) => (
           <Form
             className="blog-form"
             onChange={(e) => {
               const { name, value } = e.target;
               setFieldValue(name, value);
+              setTouched({ title: true });
               setFormValues((prev) => ({
                 ...prev,
                 [name]: value,

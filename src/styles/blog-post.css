@@ -1,0 +1,89 @@
+/* Conteneur principal de l'article */
+.article-view {
+    margin: 0 auto; /* Centrage du contenu */
+    padding: 20px; /* Padding global */
+    box-sizing: border-box;
+  }
+  
+  /* En-tête de l'article */
+
+  
+  /* Titre de l'article */
+  .article-view-title {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Contenu de l'article */
+  .article-view-content {
+    padding: 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333; /* Couleur du texte principal */
+  }
+  .article-view-meta {
+    font-size: 1.5rem
+  }
+  
+  /* Styles spécifiques pour les éléments Markdown */
+  .article-markdown-content h3 {
+    font-size: 1.5rem;
+    color: #1e40af; /* Bleu foncé */
+    margin-top: 20px;
+  }
+  
+  .article-markdown-content h4 {
+    font-size: 1.3rem;
+    color: #9333ea; /* Violet */
+    margin-top: 18px;
+  }
+  
+  .article-markdown-content h5 {
+    font-size: 1.1rem;
+    color: #e11d48; /* Rouge */
+    margin-top: 16px;
+  }
+  
+  /* Styles pour les paragraphes */
+  .article-markdown-content p {
+    margin-bottom: 15px;
+  }
+  
+  /* Gestion des images dans le Markdown */
+.article-markdown-content img {
+    max-width: 100%;
+    max-height: 600px; /* Hauteur maximale */
+    height: auto; /* Garde les proportions */
+    border-radius: 10px;
+    margin-top: 10px;
+    display: block; /* Évite les espaces indésirables sous l'image */
+    object-fit: contain; /* Empêche l'image d'être déformée */
+  }
+  
+  
+  
+  /* Gestion des listes */
+  .article-markdown-content ul,
+  .article-markdown-content ol {
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .article-markdown-content ul li {
+    list-style-type: disc;
+  }
+  
+  .article-markdown-content ol li {
+    list-style-type: decimal;
+  }
+  
+  /* Style des citations */
+  .article-markdown-content blockquote {
+    border-left: 4px solid #1e40af;
+    padding-left: 10px;
+    font-style: italic;
+    color: #555;
+    margin: 10px 0;
+  }
+  

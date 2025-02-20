@@ -33,25 +33,41 @@ const ArticlePreview = () => {
     <div className="article-preview">
       <header
         className="article-preview-header"
-        style={
-          articlePreview.image
-            ? {
-                backgroundImage: `url(${articlePreview.image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : {
-                backgroundColor: "#f4f4f4",
-                padding: "20px",
-                textAlign: "center",
-              }
-        }
+        style={{
+          position: "relative",
+          height: "300px",
+          display: "flex", // Utilisation de Flexbox
+          alignItems: "center", // Centre le contenu verticalement
+          justifyContent: "center", // Centre le contenu horizontalement
+          textAlign: "center", // Assure que le texte est centré
+          backgroundImage: articlePreview.image
+            ? `url(${articlePreview.image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundColor: articlePreview.image ? "transparent" : "#f4f4f4",
+        }}
       >
-        <div className="article-preview-overlay">
-          <h1
-            className="article-preview-title"
-            style={{ color: "rgb(245, 109, 68)" }}
-          >
+        <div
+          className="article-preview-overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.3)", // Ombre pour améliorer la lisibilité du texte
+            zIndex: 0, // L'overlay est en dessous du texte
+          }}
+        ></div>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1, // Le texte est au-dessus de l'overlay
+            color: "white", // Texte en blanc pour le contraste
+          }}
+        >
+          <h1 className="article-preview-title">
             {articlePreview.title || "Titre de l'article"}
           </h1>
           <p className="article-preview-author">

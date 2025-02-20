@@ -12,7 +12,7 @@ const useArticles = () => {
   const [articlePreview, setArticlePreview] = useState();
 
   useEffect(() => {
-    fetchArticles();
+    //fetchArticles();
   }, []);
 
   const fetchArticles = async (page = 1, category = "") => {
@@ -85,28 +85,20 @@ const useArticles = () => {
   const fetchArticleBySlug = async (slug) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/article/${slug}`);
+      const response = await trackerApi.get(`article/${slug}`);
+      const data = response.data; // Axios retourne déjà un objet JSON
 
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (!data || !data.data) {
-        throw new Error("Article non trouvé");
-      }
-
-      const article = data.data;
+      const article = data.data.article;
       console.log("Données brutes de l'article:", article);
 
       // Vérification de l'URL du fichier Markdown
-      if (!article.url) {
+      if (!article.fileUrl) {
         throw new Error("URL du fichier Markdown manquante");
       }
-      console.log("URL de l'article:", article.url);
+      console.log("URL de l'article:", article.fileUrl);
 
       // Récupération du contenu Markdown
-      const markdownResponse = await fetch(article.url);
+      const markdownResponse = await fetch(article.fileUrl);
       if (!markdownResponse.ok) {
         throw new Error("Erreur lors du chargement du fichier Markdown");
       }

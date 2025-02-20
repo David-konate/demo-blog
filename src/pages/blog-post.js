@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, navigate } from "@reach/router";
 import useArticles from "../services/articleService";
-
+import Layout from "./components/layout";
 import { SEO } from "./components/seo";
 import Showdown from "showdown";
+import "../styles/blog-post.css";
 export function useMedia(query) {
   const [matches, setMatches] = useState(false);
 
@@ -48,11 +49,11 @@ const BlogPost = () => {
     }
     return location.state?.slug || null;
   });
-
+  console.log(slug);
   const isLaptop = useMedia("(min-width: 1225px)");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && slug) {
+    if (slug) {
       sessionStorage.setItem("slug", slug); // Sauvegarde le slug en session
       fetchArticleBySlug(slug);
     }
@@ -60,11 +61,11 @@ const BlogPost = () => {
       navigate("/blog-list"); // Redirige si pas de slug
     }
   }, [slug]);
-
+  console.log(article);
   if (loading) return <p>Chargement...</p>;
   if (!article) return <p>Article introuvable.</p>;
   return (
-    <>
+    <Layout>
       <SEO
         title={article?.title || "Chargement..."}
         description={
@@ -77,9 +78,45 @@ const BlogPost = () => {
           <p>Chargement de l'article...</p>
         ) : article ? (
           <>
-            <div className="article-view-header">
-              <h1 className="article-view-title">{article.title}</h1>
+            <div
+              className="article-view-header"
+              style={{
+                position: "relative",
+                height: "300px",
+                display: "flex", // Utilisation de Flexbox
+                alignItems: "center", // Centre le contenu verticalement
+                justifyContent: "center", // Centre le contenu horizontalement
+                textAlign: "center", // Assure que le texte est centré
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${article.image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  filter: "brightness(0.4)", // Applique un filtre de luminosité pour la lisibilité du texte
+                  zIndex: 0, // Assure que l'image est en arrière-plan
+                }}
+              ></div>
+              <div
+                style={{
+                  position: "relative",
+                  zIndex: 1, // Assure que le texte est au-dessus de l'image
+                  color: "white",
+                }}
+              >
+                <h1 className="article-view-title">{article.title}</h1>
+                <p className="article-view-meta">
+                  Par {article.author}, le {article.date}
+                </p>
+              </div>
             </div>
+
             <div className="article-view-content">
               {/* <ReactMarkdown className="article-markdown-content">
                 {markdown}
@@ -96,7 +133,7 @@ const BlogPost = () => {
           <p>Article non trouvé.</p>
         )}
       </div>
-    </>
+    </Layout>
   );
 };
 

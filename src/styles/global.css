@@ -1,22 +1,16 @@
-/* Variables globales */
 :root {
   --primary-color: #0a84ff;
   --secondary-color: #1a1a2e;
-  --gradient-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  --text-color: ##1a1a2e;
-  --link-color: #0a84ff;
-  --link-hover-color: #0070d1;
-
-  --box-shadow: rgba(0, 0, 0, 0.3);
-  --input-background: #1a1a2e;
-  --border-color: #333;
-  --focus-background: #16213e;
-  --button-text-color: #fff;
-  --disabled-background: #444;
-  --disabled-text-color: #777;
-  --overlay-color: rgba(0, 0, 0, 0.7);
-  --modal-background: #1a1a2e;
-  --modal-shadow: rgba(0, 0, 0, 0.4);
+  --text-color: #121212; /* Texte sombre pour le contraste */
+  --background-color: #f0f0f0; /* Fond clair */
+  --input-background: #ffffff; /* Fond clair pour les inputs */
+  --border-color: #ddd; /* Bordure plus claire */
+  --box-shadow-color: #0f0f36; /* Ombre plus légère */
+  --overlay-color: rgba(0, 0, 0, 0.5); /* Overlay semi-transparent */
+  --modal-background: #ffffff; /* Fond modal clair */
+  --modal-shadow: rgba(0, 255, 255, 0.1); /* Ombre modal plus douce */
+  --gradient-bg: linear-gradient(135deg, #0a84ff, #1a1a2e); /* Le même dégradé pour conserver l’aspect dynamique */
+  --focus-background: #e0e0e0; /* Fond de focus plus clair */
 }
 
 /* Reset général */
@@ -46,6 +40,15 @@ body {
 .content-wrap {
   flex-grow: 1;
 }
+
+.content-container {
+  max-width: 1536px; /* Largeur max */
+  margin: 0 auto; /* Centre le contenu */
+  padding: 30px 20px; /* Toujours un padding de 20px en bas et sur les côtés */
+  width: 100%; /* Évite que l'élément soit plus petit que nécessaire */
+  box-sizing: border-box; /* Empêche le padding d'affecter la largeur */
+}
+
 
 /* Navbar */
 .navbar {
@@ -100,7 +103,7 @@ body {
 .contact-btn {
   font-size: 16px;
   font-weight: 700;
-  color: var(--button-text-color);
+  color: var(--background-color);
   background: var(--gradient-bg);
   border-radius: 25px;
   padding: 10px 25px;

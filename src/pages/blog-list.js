@@ -75,7 +75,7 @@ const AllArticles = () => {
 
   return (
     <Layout>
-      <div className="blog-container" style={{ marginTop: "10rem" }}>
+      <div className="blog-container">
         <div className="blog-header">
           <h1>Notre blog</h1>
           <p>
