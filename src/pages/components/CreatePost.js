@@ -192,11 +192,17 @@ const CreatePost = () => {
                 }}
               >
                 <option value="">Sélectionner une catégorie</option>
-                <option value="Application">Application</option>
-                <option value="Divers">Divers</option>
-                <option value="Events">Events</option>
-                <option value="Playgrounds">Playgrounds</option>
-                <option value="Streetball">Streetball</option>
+                <option value="Moi">Moi & Mon Parcours</option>
+                <option value="Projets">Mes Projets & Développement</option>
+                <option value="Geek">Livres, BD & Culture Geek</option>
+                <option value="Series">Films & Séries</option>
+                <option value="Sports">Sport & Bien-être</option>
+                <option value="Inspirations">
+                  Mes Inspirations & Motivations
+                </option>
+                <option value="Conseils">
+                  Conseils & Retours d’Expérience
+                </option>
               </Field>
               <ErrorMessage name="category" component="div" className="error" />
               <label>Image Principale</label>

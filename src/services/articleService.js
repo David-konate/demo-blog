@@ -12,7 +12,7 @@ const useArticles = () => {
   const [articlePreview, setArticlePreview] = useState();
 
   useEffect(() => {
-    fetchArticles();
+    // fetchArticles();
   }, []);
 
   const fetchArticles = async (page = 1, category = "") => {
@@ -22,6 +22,9 @@ const useArticles = () => {
     try {
       // Requête API
       const queryParams = new URLSearchParams({ page, category }).toString();
+      // const response = await fetch(
+      //   `https://blog-api.david-konate.fr/api/articles?${queryParams}`
+      // );
       const response = await fetch(
         `http://localhost:3000/api/articles?${queryParams}`
       );
@@ -84,11 +87,13 @@ const useArticles = () => {
 
   const fetchArticleBySlug = async (slug) => {
     setLoading(true);
+    console.log("Récupération de l'article avec le slug:", slug);
     try {
-      const response = await trackerApi.get(`article/${slug}`);
-      const data = response.data; // Axios retourne déjà un objet JSON
+      const response = await trackerApi(`/article/${slug}`);
 
-      const article = data.data.article;
+      const data = response.data; // Axios retourne déjà un objet JSON
+      console.log(data);
+      const article = data.data;
       console.log("Données brutes de l'article:", article);
 
       // Vérification de l'URL du fichier Markdown

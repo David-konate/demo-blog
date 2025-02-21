@@ -79,9 +79,10 @@ const AllArticles = () => {
         <div className="blog-header">
           <h1>Notre blog</h1>
           <p>
-            Retrouvez ici l'intégralité de nos blogs, ainsi que les blogs de nos
-            partenaires réalisés pour la communauté et les fans de basketball.
+            Découvrez ici tous mes articles ainsi que des contenus variés sur le
+            développement, la tech, le sport, la culture et bien plus encore.
           </p>
+
           <div className="category-filters">
             {categories.map((category, index) => (
               <ButtonFilter

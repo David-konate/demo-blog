@@ -35,7 +35,6 @@ const BlogPost = () => {
     }
     return location.state?.slug || null;
   });
-  console.log(slug);
 
   useEffect(() => {
     if (slug) {
@@ -46,7 +45,6 @@ const BlogPost = () => {
       navigate("/blog-list"); // Redirige si pas de slug
     }
   }, [slug]);
-  console.log(article);
   if (loading) return <p>Chargement...</p>;
   if (!article) return <p>Article introuvable.</p>;
   return (
