@@ -12,7 +12,7 @@ const useArticles = () => {
   const [articlePreview, setArticlePreview] = useState();
 
   useEffect(() => {
-    //fetchArticles();
+    fetchArticles();
   }, []);
 
   const fetchArticles = async (page = 1, category = "") => {

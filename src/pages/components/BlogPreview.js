@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "gatsby";
-import useArticles from "../../services/articleService";
+import { useArticleContext } from "../../context/use-article-context";
 
 const BlogPreview = () => {
-  const { articlePreview } = useArticles();
+  const { articlePreview } = useArticleContext();
 
   if (!articlePreview) return <p>Aucun aperçu disponible</p>;
 

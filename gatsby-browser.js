@@ -5,7 +5,7 @@ import { MediaProvider } from "./src/context/media-context";
 export const wrapRootElement = ({ element }) => {
   return (
     <ArticleProvider>
-      <MediaProvider>{element}</MediaProvider>
+      <MediaProvider>{element} </MediaProvider>
     </ArticleProvider>
   );
 };
