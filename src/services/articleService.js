@@ -38,7 +38,6 @@ const useArticles = () => {
       // Récupération et traitement du contenu Markdown
       const articlesWithContent = await Promise.all(
         data.data.map(async (article) => {
-          console.log(article);
           try {
             if (!article.fileUrl) {
               console.warn(
@@ -61,6 +60,7 @@ const useArticles = () => {
               slug: extract(/slug:\s*"?(.+?)"?$/m),
               image: extract(/image:\s*"?(.+?)"?$/m),
               content: marked(content),
+              protectedPost: article.protected,
             };
           } catch (error) {
             console.error(
@@ -87,20 +87,16 @@ const useArticles = () => {
 
   const fetchArticleBySlug = async (slug) => {
     setLoading(true);
-    console.log("Récupération de l'article avec le slug:", slug);
     try {
       const response = await trackerApi(`/article/${slug}`);
 
       const data = response.data; // Axios retourne déjà un objet JSON
-      console.log(data);
       const article = data.data;
-      console.log("Données brutes de l'article:", article);
 
       // Vérification de l'URL du fichier Markdown
       if (!article.fileUrl) {
         throw new Error("URL du fichier Markdown manquante");
       }
-      console.log("URL de l'article:", article.fileUrl);
 
       // Récupération du contenu Markdown
       const markdownResponse = await fetch(article.fileUrl);
@@ -109,7 +105,6 @@ const useArticles = () => {
       }
 
       const content = await markdownResponse.text();
-      console.log("Contenu Markdown brut:", content);
 
       // Extraction des métadonnées
       const extractMetadata = (regex) => {
@@ -128,18 +123,8 @@ const useArticles = () => {
         extractMetadata(/image:\s*"?(.+?)"?$/m) || "Image non trouvée";
       const slugExtracted = extractMetadata(/slug:\s*"?(.+?)"?$/m) || slug;
 
-      console.log("Métadonnées extraites:", {
-        title,
-        author,
-        date,
-        category,
-        image,
-        slugExtracted,
-      });
-
       // Supprimer les métadonnées du contenu Markdown
       const cleanedMarkdown = content.replace(/^---[\s\S]+?---/, "").trim();
-      console.log("Contenu Markdown nettoyé:", cleanedMarkdown);
 
       // Article formaté
       const formattedArticle = {
@@ -152,8 +137,6 @@ const useArticles = () => {
         slug: slugExtracted,
         created_at: article.created_at,
       };
-
-      console.log("Article formaté :", formattedArticle);
 
       // Mise à jour du state
       setArticle(formattedArticle);
@@ -193,8 +176,6 @@ const useArticles = () => {
   };
 
   const saveArticle = async (articleData) => {
-    console.log({ articleData });
-
     try {
       const uniqueSlug = await checkOrGenerateSlug(articleData.slug);
 
@@ -203,9 +184,7 @@ const useArticles = () => {
         slug: uniqueSlug,
       };
 
-      console.log("Image avant sauvegarde :", updatedArticleData.image);
       const imageTitre = await saveImages(updatedArticleData);
-      console.log("Image enregistrée :", imageTitre);
 
       if (!imageTitre) {
         throw new Error("L'image n'a pas été correctement enregistrée");
@@ -217,8 +196,6 @@ const useArticles = () => {
         image: imageTitre,
       });
 
-      console.log("Contenu Markdown généré :", markdownContent);
-
       // Création d'un Blob
       const markdownBlob = new Blob([markdownContent], {
         type: "text/markdown",
@@ -228,8 +205,6 @@ const useArticles = () => {
       const formData = new FormData();
       formData.append("markdown", markdownBlob, `${uniqueSlug}.md`);
 
-      console.log("FormData avant envoi :", [...formData.entries()]);
-
       // Envoi de la requête
       const response = await trackerApi.post(`save/${uniqueSlug}`, formData, {
         headers: {
@@ -238,7 +213,6 @@ const useArticles = () => {
       });
 
       if (response.status === 200) {
-        console.log("Article enregistré avec succès :", response.data);
         return response.data;
       } else {
         throw new Error("Erreur lors de l'enregistrement de l'article");
@@ -256,7 +230,6 @@ const useArticles = () => {
     try {
       const response = await trackerApi.delete(`article/${slug}`);
       if (response.status === 200) {
-        console.log("Article supprimé avec succès");
         fetchArticles(); // Rafraîchir la liste après suppression
       } else {
         throw new Error("Erreur lors de la suppression de l'article");
@@ -265,13 +238,13 @@ const useArticles = () => {
       console.error("Erreur lors de la suppression de l'article :", error);
       throw error;
     } finally {
-      navigate("/app/allArticles/");
+      navigate("/blog-list");
     }
   };
 
   // Mettre à jour un article existant
   const updateArticle = async (updatedData) => {
-    console.log("Updating article with data:", updatedData);
+    console.log("Données mises à jour :", updatedData);
     try {
       // Sauvegarde de l’image titre uniquement si elle n’est pas déjà une URL Cloudinary
       let imageTitre = updatedData.image;
@@ -299,7 +272,7 @@ const useArticles = () => {
       const markdownFile = new File([markdownBlob], `${updatedData.slug}.md`, {
         type: "text/markdown",
       });
-
+      console.log("Markdown file:", markdownFile);
       // Mise à jour des données avec le fichier Markdown
       const formData = new FormData();
       formData.append("markdown", markdownFile); // Ajout du fichier Markdown
@@ -316,7 +289,6 @@ const useArticles = () => {
       );
 
       if (response.status === 200) {
-        console.log("Article mis à jour avec succès");
         fetchArticles(); // Rafraîchir la liste des articles
         return response.data;
       } else {
@@ -326,7 +298,7 @@ const useArticles = () => {
       console.error("Erreur lors de la mise à jour de l'article :", error);
       throw error;
     } finally {
-      navigate("/app/allArticles/");
+      navigate("/blog-list");
     }
   };
 
@@ -334,7 +306,6 @@ const useArticles = () => {
   const saveImages = async (articleData) => {
     try {
       const formData = new FormData();
-      console.log(articleData.image);
       // Gestion de l'image titre
       if (articleData.image) {
         const titleBlob = await fetch(articleData.image).then((res) =>
@@ -352,7 +323,6 @@ const useArticles = () => {
           },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         return response.data.image_title_url;
       } else {
@@ -366,10 +336,8 @@ const useArticles = () => {
 
   // Vérifier ou générer un slug unique
   const checkOrGenerateSlug = async (slug) => {
-    console.log({ slug });
     try {
       const response = await trackerApi.get(`check-or-generate-slug/${slug}`);
-      console.log("Réponse API (checkOrGenerateSlug) :", response.data); // Debug
 
       if (response.data && response.data.uniqueSlug) {
         return response.data.uniqueSlug.trim(); // S'assurer qu'il n'y a pas d'espaces en trop

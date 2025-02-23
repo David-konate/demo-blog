@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "gatsby";
-import arrowRight from "../../images/arrow_right.png"; // Assurez-vous d'importer l'icône
+import { FiEdit, FiTrash2 } from "react-icons/fi"; // Import des icônes
 import "../../styles/blog-card.css";
 
 const BlogCard = ({
@@ -11,8 +11,9 @@ const BlogCard = ({
   date,
   resume,
   slug,
-  sections,
-  link,
+  protectedPost, // Renommé en protectedPost pour éviter la confusion avec le mot-clé `protected`
+  onEdit,
+  onDelete,
 }) => {
   return (
     <div className="blog-card-container">
@@ -33,7 +34,8 @@ const BlogCard = ({
           <p className="blog-card-title">{title}</p>
           <p className="blog-card-resume">{resume}</p>
         </div>
-        <div>
+
+        <div className="blog-card-footer">
           <Link
             to={`/blog-post`}
             state={{ slug: slug }}
@@ -41,6 +43,20 @@ const BlogCard = ({
           >
             LIRE PLUS
           </Link>
+
+          {!protectedPost && (
+            <div className="blog-card-actions">
+              <button className="blog-card-btn edit" onClick={() => onEdit()}>
+                <FiEdit />
+              </button>
+              <button
+                className="blog-card-btn delete"
+                onClick={() => onDelete({ title, slug })}
+              >
+                <FiTrash2 />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

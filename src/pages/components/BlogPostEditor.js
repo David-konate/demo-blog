@@ -8,38 +8,46 @@ import MarkdownInfo from "./markdownInfo";
 import { useArticleContext } from "../../context/use-article-context";
 import useArticles from "../../services/articleService";
 
-const CreatePost = () => {
-  const { setArticlePreview } = useArticleContext();
-  const { saveArticle } = useArticles();
+const BlogPostEditor = ({ slug }) => {
+  const { updateArticle, setArticlePreview, fetchArticleBySlug, article } =
+    useArticleContext();
   const [selectedTab, setSelectedTab] = useState("write");
-
-  const [markdown, setMarkdown] = useState("");
   const [formValues, setFormValues] = useState({
     title: "",
     author: "",
-    date: new Date().toISOString().split("T")[0],
+    date: "",
     category: "",
     slug: "",
     image: "",
   });
+  const [markdown, setMarkdown] = useState("");
 
   useEffect(() => {
-    // Déclenchement de la mise à jour de l'aperçu lorsque les valeurs du formulaire ou markdown changent
+    if (slug) {
+      fetchArticleBySlug(slug);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    if (article) {
+      setFormValues({
+        title: article.title,
+        author: article.author,
+        date: article.date,
+        category: article.category,
+        slug: article.slug,
+        image: article.image || "",
+      });
+      setMarkdown(article.content || "");
+    }
+  }, [article]);
+
+  useEffect(() => {
     setArticlePreview({
       ...formValues,
       content: markdown,
     });
   }, [formValues, markdown, setArticlePreview]);
-
-  Showdown.extension("center-images", function () {
-    return [
-      {
-        type: "output",
-        regex: /<img(.*?)>/g,
-        replace: `<div style="text-align: center;"><img $1 style="max-width:100%; height:auto; max-height:400px;" /></div>`,
-      },
-    ];
-  });
 
   const customCommand = {
     name: "my-custom-command-indentation",
@@ -80,22 +88,10 @@ const CreatePost = () => {
     tables: true,
     simplifiedAutoLink: true,
     literalMidWordUnderscores: true,
-    extensions: ["center-images"],
     simpleLineBreaks: true,
-    simplifiedAutoLink: true,
     strikethrough: true,
     tasklists: true,
   });
-
-  const generateSlug = (title) => {
-    return title
-      .normalize("NFD") // Décompose les caractères accentués
-      .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-") // Remplace tout ce qui n'est pas alphanumérique par "-"
-      .replace(/^-+|-+$/g, "") // Supprime les tirets en début et fin
-      .substring(0, 50);
-  };
 
   return (
     <div className="blog-creator-container">
@@ -114,7 +110,7 @@ const CreatePost = () => {
         })}
         onSubmit={(values) => {
           console.log("Article soumis :", values, markdown);
-          saveArticle({ ...values, content: markdown });
+          updateArticle({ ...values, content: markdown, slug: article.slug });
         }}
         enableReinitialize
         validateOnBlur={true}
@@ -145,7 +141,6 @@ const CreatePost = () => {
                   setFormValues((prev) => ({
                     ...prev,
                     title: value,
-                    slug: generateSlug(value),
                   }));
                 }}
               />
@@ -268,7 +263,7 @@ const CreatePost = () => {
                 className="btn"
                 style={{ marginTop: "1rem" }}
               >
-                Publier
+                Modifier
               </button>
             </div>
           </Form>
@@ -278,4 +273,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default BlogPostEditor;

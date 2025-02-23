@@ -14,13 +14,23 @@ const MarkdownInfo = () => {
 
   return (
     <div>
-      <button onClick={() => setIsOpen(true)} className="info-button">
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="info-button"
+      >
         ℹ️
       </button>
 
       {isOpen &&
         ReactDOM.createPortal(
-          <div className="modal-overlay" onClick={() => setIsOpen(false)}>
+          <div
+            className="modal-overlay"
+            onClick={(e) => {
+              e.stopPropagation(); // Empêche la propagation de l'événement
+              setIsOpen(false);
+            }}
+          >
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <h2>📜 Règles d'écriture en Markdown</h2>
 

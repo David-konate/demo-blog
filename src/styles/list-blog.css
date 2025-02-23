@@ -78,7 +78,7 @@
   
   .page-btn, .page-number {
     background: var(--secondary-color);
-    color: var(--button-text-color);
+    color: whitesmoke;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
@@ -89,6 +89,7 @@
   
   .page-btn:hover, .page-number:hover {
     background: var(--primary-color);
+    color: var(--secondary-color);
     transform: scale(1.1);
   }
   

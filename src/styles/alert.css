@@ -1,0 +1,181 @@
+/* Overlay de fond du modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 132, 255, 0.1); /* Légère couleur primaire sur le fond */
+    backdrop-filter: blur(5px); /* Applique un flou de fond */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+  
+/* Animation de l'apparition du modal */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Contenu principal du modal */
+.modal-content {
+    position: relative;
+    background: var(--modal-background); /* Fond modal global */
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px var(--box-shadow-color);
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: slideIn 0.3s ease-in-out;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Animation de l'apparition du contenu modal */
+@keyframes slideIn {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Titre du modal + bouton de fermeture dans le même espace */
+.alert-header {
+    position: relative;
+    background: #fff;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0; /* Arrondi en haut seulement */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #333;
+    margin-bottom: 0; /* Pas de marge supplémentaire en dessous */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.alert-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px; /* Agrandir la taille de la croix */
+    color: inherit;
+    cursor: pointer;
+}
+
+.alert-close:hover {
+    opacity: 0.7;
+}
+
+/* Contenu du modal */
+.alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 16px;
+    color: var(--text-color);
+    padding-top: 10px; /* Décalage pour éviter que le contenu touche l'en-tête */
+}
+
+/* Boutons d'action */
+.alert-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px; /* Espacement plus large entre les boutons */
+}
+
+/* Boutons de confirmation */
+.alert-btn {
+    padding: 12px 20px; /* Augmenter le padding pour les boutons */
+    font-size: 16px; /* Augmenter la taille de la police des boutons */
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: background 0.2s ease-in-out;
+    font-weight: 700; /* Mettre en gras les boutons */
+}
+
+.alert-btn.confirm {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.alert-btn.confirm:hover {
+    background-color: #0056b3;
+}
+
+/* Couleurs en fonction du type d'alerte */
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.alert-success .alert-btn.confirm {
+    background-color: #28a745;
+}
+
+.alert-error .alert-btn.confirm {
+    background-color: #dc3545;
+}
+
+.alert-warning .alert-btn.confirm {
+    background-color: #ffc107;
+}
+
+.alert-info .alert-btn.confirm {
+    background-color: #17a2b8;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 20px;
+    }
+
+    .alert {
+        font-size: 16px; /* Agrandir un peu la police pour les petits écrans */
+    }
+
+    .alert-btn {
+        font-size: 14px; /* Agrandir la taille des boutons */
+        padding: 10px 15px; /* Augmenter légèrement le padding des boutons */
+    }
+}

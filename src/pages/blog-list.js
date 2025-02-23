@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import Alert from "./components/Alert"; // Assurez-vous d'importer l'alerte
 import BlogCard from "./components/BlogCard";
 import useArticles from "../services/articleService";
 import ButtonFilter from "./components/ButtonFilter";
 import "../styles/list-blog.css";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Layout from "./components/layout";
+import { navigate } from "gatsby";
 
 const AllArticles = () => {
   const {
@@ -12,12 +14,16 @@ const AllArticles = () => {
     fetchArticles,
     getArticleCountByCategory,
     categoriesCount,
+    deleteArticle,
+    updateArticle,
   } = useArticles();
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 3;
   const [displayedArticles, setDisplayedArticles] = useState([]);
+  const [articleToDelete, setArticleToDelete] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null); // Ajouter un état pour l'alerte
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +45,6 @@ const AllArticles = () => {
     fetchData();
   }, [currentPage, selectedCategory]);
 
-  // Mettre à jour displayedArticles dès que articles change
   useEffect(() => {
     setDisplayedArticles(articles);
   }, [articles]);
@@ -62,6 +67,19 @@ const AllArticles = () => {
     (categoryCounts[selectedCategory] || totalArticles) / articlesPerPage
   );
 
+  const handleDeleteRequest = (article) => {
+    setArticleToDelete(article);
+    setAlertMessage({
+      message: `Voulez-vous vraiment supprimer l'article "${article.title}" ?`,
+      type: "warning", //"success", "error", "warning", "info"
+      duration: 0, // Set duration to 0 so the alert remains until action
+      onConfirm: () => deleteArticle(article.slug), // Add a confirmation handler
+    });
+  };
+  const handleUpdate = (article) => {
+    navigate("/blog-update", { state: { slug: article.slug } });
+  };
+
   const handlePageChange = (page) => {
     if (page === "prev" && currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
@@ -82,7 +100,6 @@ const AllArticles = () => {
             Découvrez ici tous mes articles ainsi que des contenus variés sur le
             développement, la tech, le sport, la culture et bien plus encore.
           </p>
-
           <div className="category-filters">
             {categories.map((category, index) => (
               <ButtonFilter
@@ -119,7 +136,10 @@ const AllArticles = () => {
                   date={post.date}
                   content={post.content}
                   sections={post.sections}
+                  protectedPost={post.protectedPost}
                   link={`/blog-post`}
+                  onEdit={() => handleUpdate(post)}
+                  onDelete={handleDeleteRequest} // Utiliser handleDeleteRequest pour afficher l'alerte
                 />
               ))}
             </div>
@@ -153,6 +173,16 @@ const AllArticles = () => {
             </button>
           </div>
         </div>
+        {alertMessage && (
+          <Alert
+            message={alertMessage.message}
+            type={alertMessage.type}
+            duration={alertMessage.duration}
+            visible={Boolean(alertMessage)} // On passe visible en fonction de l'état
+            onClose={() => setAlertMessage(null)} // On remet alertMessage à null
+            onConfirm={alertMessage.onConfirm}
+          />
+        )}
       </div>
     </Layout>
   );
