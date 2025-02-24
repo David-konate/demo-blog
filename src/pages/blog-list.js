@@ -8,6 +8,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Layout from "./components/layout";
 import { navigate } from "gatsby";
 import Spinner from "./components/Spinner";
+import { Helmet } from "react-helmet";
 
 const AllArticles = () => {
   const {
@@ -89,6 +90,50 @@ const AllArticles = () => {
     </Layout>
   ) : (
     <Layout>
+      <Helmet>
+        <title>Notre Blog - Articles sur la Tech, le Sport et plus</title>
+        <meta
+          name="description"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
+        />
+        <meta
+          name="keywords"
+          content="blog, tech, développement, sport, culture, articles, web"
+        />
+        <meta name="author" content="Ton Nom" />
+
+        {/* Open Graph pour Facebook & LinkedIn */}
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Notre Blog - Articles sur la Tech, le Sport et plus"
+        />
+        <meta
+          property="og:description"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
+        />
+        <meta property="og:url" content="https://ton-site.com/blog" />
+        <meta
+          property="og:image"
+          content="https://ton-site.com/images/blog-banner.jpg"
+        />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Notre Blog - Articles sur la Tech, le Sport et plus"
+        />
+        <meta
+          name="twitter:description"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
+        />
+        <meta
+          name="twitter:image"
+          content="https://ton-site.com/images/blog-banner.jpg"
+        />
+        <meta name="twitter:site" content="@TonTwitter" />
+      </Helmet>
       <div className="blog-container">
         <div className="blog-header">
           <h1>Notre blog</h1>

@@ -1,0 +1,113 @@
+/* Documentation.css */
+
+/* Conteneur principal */
+.documentation-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+/* Titres principaux */
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--secondary-color, #333);
+    margin-top: 1.5rem;
+}
+
+/* Section */
+section {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+/* Texte */
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-top: 1rem;
+}
+
+/* Listes */
+ul {
+    padding-left: 1.5rem;
+    list-style-type: disc;
+    margin-top: 1rem;
+}
+
+ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Bloc de code */
+code {
+    font-size: 0.875rem;
+    background-color: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+pre {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Mise en page responsive */
+@media (max-width: 768px) {
+    .documentation-container {
+        padding: 1rem;
+    }
+
+    section {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+}

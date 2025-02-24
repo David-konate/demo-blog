@@ -69,11 +69,52 @@ const Welcome = () => {
   return (
     <main style={pageStyles}>
       <Helmet>
-        <title>Page d'accueil</title>
+        <title>Notre Blog - Articles sur la Tech, le Sport et plus</title>
         <meta
           name="description"
-          content="Bienvenue sur la page d'accueil de l'application"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
         />
+        <meta
+          name="keywords"
+          content="blog, tech, développement, sport, culture, articles, web"
+        />
+        <meta name="author" content="Ton Nom" />
+
+        {/* Open Graph pour Facebook & LinkedIn */}
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Notre Blog - Articles sur la Tech, le Sport et plus"
+        />
+        <meta
+          property="og:description"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
+        />
+        <meta property="og:url" content="https://ton-site.com/blog" />
+        <meta
+          property="og:image"
+          content="https://ton-site.com/images/blog-banner.jpg"
+        />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Notre Blog - Articles sur la Tech, le Sport et plus"
+        />
+        <meta
+          name="twitter:description"
+          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
+        />
+        <meta
+          name="twitter:image"
+          content="https://ton-site.com/images/blog-banner.jpg"
+        />
+        <meta name="twitter:site" content="@TonTwitter" />
+
+        {/* SEO spécifique pour la page d'accueil */}
+        <meta property="og:site_name" content="Nom de Ton Site" />
+        <meta name="robots" content="index, follow" />
       </Helmet>
       <div style={contentStyles}>
         <h1 style={headingStyles}>
@@ -103,11 +144,18 @@ const Welcome = () => {
         </ul>
         <p>
           Découvrez le projet sur{" "}
-          <a style={linkStyle} href="#">
-            GitHub
+          <a style={linkStyle} href="https://github.com/David-konate/demo-blog">
+            GitHub (Front-end)
           </a>{" "}
-          ou consultez la{" "}
-          <a style={linkStyle} href="#">
+          et{" "}
+          <a
+            style={linkStyle}
+            href="https://github.com/David-konate/demo-blog-api"
+          >
+            GitHub (Back-end)
+          </a>
+          , ou consultez la{" "}
+          <a style={linkStyle} href="/documentation">
             documentation
           </a>
           .
