@@ -9,8 +9,14 @@ import { useArticleContext } from "../../context/use-article-context";
 import useArticles from "../../services/articleService";
 
 const BlogPostEditor = ({ slug }) => {
-  const { updateArticle, setArticlePreview, fetchArticleBySlug, article } =
-    useArticleContext();
+  const {
+    updateArticle,
+    setArticlePreview,
+    fetchArticleBySlug,
+    article,
+    markdown,
+    setMarkdown,
+  } = useArticleContext();
   const [selectedTab, setSelectedTab] = useState("write");
   const [formValues, setFormValues] = useState({
     title: "",
@@ -20,7 +26,6 @@ const BlogPostEditor = ({ slug }) => {
     slug: "",
     image: "",
   });
-  const [markdown, setMarkdown] = useState("");
 
   useEffect(() => {
     if (slug) {
@@ -38,7 +43,7 @@ const BlogPostEditor = ({ slug }) => {
         slug: article.slug,
         image: article.image || "",
       });
-      setMarkdown(article.content || "");
+      setMarkdown(markdown || "");
     }
   }, [article]);
 

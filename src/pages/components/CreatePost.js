@@ -7,10 +7,11 @@ import ReactMde from "react-mde";
 import MarkdownInfo from "./markdownInfo";
 import { useArticleContext } from "../../context/use-article-context";
 import useArticles from "../../services/articleService";
+import Spinner from "./Spinner";
 
 const CreatePost = () => {
   const { setArticlePreview } = useArticleContext();
-  const { saveArticle } = useArticles();
+  const { saveArticle, loading } = useArticles();
   const [selectedTab, setSelectedTab] = useState("write");
 
   const [markdown, setMarkdown] = useState("");
@@ -24,7 +25,6 @@ const CreatePost = () => {
   });
 
   useEffect(() => {
-    // Déclenchement de la mise à jour de l'aperçu lorsque les valeurs du formulaire ou markdown changent
     setArticlePreview({
       ...formValues,
       content: markdown,
@@ -99,181 +99,200 @@ const CreatePost = () => {
 
   return (
     <div className="blog-creator-container">
-      <h1 className="blog-creator-title">Créer un article pour le blog</h1>
-
-      <Formik
-        initialValues={formValues}
-        validationSchema={Yup.object({
-          title: Yup.string()
-            .required("Titre requis")
-            .max(50, "Le titre ne doit pas dépasser 50 caractères"),
-          author: Yup.string().required("Auteur requis"),
-          date: Yup.string().required("Date requise"),
-          category: Yup.string().required("Catégorie requise"),
-          slug: Yup.string().required("Slug requis"),
-        })}
-        onSubmit={(values) => {
-          console.log("Article soumis :", values, markdown);
-          saveArticle({ ...values, content: markdown });
-        }}
-        enableReinitialize
-        validateOnBlur={true}
-        validateOnChange={true}
-      >
-        {({ setFieldValue, values, errors, touched, setTouched }) => (
-          <Form
-            className="blog-form"
-            onChange={(e) => {
-              const { name, value } = e.target;
-              setFieldValue(name, value);
-              setTouched({ title: true });
-              setFormValues((prev) => ({
-                ...prev,
-                [name]: value,
-              }));
+      {loading ? (
+        <p>
+          <Spinner />
+        </p>
+      ) : (
+        <div>
+          <h1 className="blog-creator-title">Créer un article pour le blog</h1>
+          <Formik
+            initialValues={formValues}
+            validationSchema={Yup.object({
+              title: Yup.string()
+                .required("Titre requis")
+                .max(50, "Le titre ne doit pas dépasser 50 caractères"),
+              author: Yup.string().required("Auteur requis"),
+              date: Yup.string().required("Date requise"),
+              category: Yup.string().required("Catégorie requise"),
+              slug: Yup.string().required("Slug requis"),
+            })}
+            onSubmit={(values) => {
+              console.log("Article soumis :", values, markdown);
+              saveArticle({ ...values, content: markdown, setLoading: true });
             }}
+            enableReinitialize
+            validateOnBlur={true}
+            validateOnChange={true}
           >
-            {console.log("Erreurs du formulaire :", errors, touched)}
-            <div className="form-group">
-              <label>Titre</label>
-              <Field
-                name="title"
-                type="text"
+            {({ setFieldValue, values, errors, touched, setTouched }) => (
+              <Form
+                className="blog-form"
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setFieldValue("title", value);
+                  const { name, value } = e.target;
+                  setFieldValue(name, value);
+                  setTouched({ title: true });
                   setFormValues((prev) => ({
                     ...prev,
-                    title: value,
-                    slug: generateSlug(value),
-                  }));
-                }}
-              />
-              <ErrorMessage name="title" component="div" className="error" />
-              <label>Auteur</label>
-              <Field
-                name="author"
-                type="text"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFieldValue("author", value);
-                  setFormValues((prev) => ({
-                    ...prev,
-                    author: value,
-                  }));
-                }}
-              />
-              <ErrorMessage name="author" component="div" className="error" />
-              <label>Date</label>
-              <Field
-                name="date"
-                type="date"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFieldValue("date", value);
-                  setFormValues((prev) => ({
-                    ...prev,
-                    date: value,
-                  }));
-                }}
-              />
-              <ErrorMessage name="date" component="div" className="error" />
-              <label>Catégorie</label>
-              <Field
-                as="select"
-                name="category"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFieldValue("category", value);
-                  setFormValues((prev) => ({
-                    ...prev,
-                    category: value,
+                    [name]: value,
                   }));
                 }}
               >
-                <option value="">Sélectionner une catégorie</option>
-                <option value="Moi">Moi & Mon Parcours</option>
-                <option value="Projets">Mes Projets & Développement</option>
-                <option value="Geek">Livres, BD & Culture Geek</option>
-                <option value="Series">Films & Séries</option>
-                <option value="Sports">Sport & Bien-être</option>
-                <option value="Inspirations">
-                  Mes Inspirations & Motivations
-                </option>
-                <option value="Conseils">
-                  Conseils & Retours d’Expérience
-                </option>
-              </Field>
-              <ErrorMessage name="category" component="div" className="error" />
-              <label>Image Principale</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) => {
-                  const file = event.target.files[0];
-                  if (file) {
-                    const imageUrl = URL.createObjectURL(file);
-                    setFieldValue("image", imageUrl);
-                    setFormValues((prev) => ({
-                      ...prev,
-                      image: imageUrl,
-                    }));
-                  }
-                }}
-              />
-              <ErrorMessage name="image" component="div" />
-              {values.image && (
-                <div className="image-preview">
-                  <img
-                    src={values.image}
-                    alt="Aperçu"
-                    style={{ maxWidth: "100px", maxHeight: "100px" }}
+                {console.log("Erreurs du formulaire :", errors, touched)}
+                <div className="form-group">
+                  <label>Titre</label>
+                  <Field
+                    name="title"
+                    type="text"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFieldValue("title", value);
+                      setFormValues((prev) => ({
+                        ...prev,
+                        title: value,
+                        slug: generateSlug(value),
+                      }));
+                    }}
                   />
+                  <ErrorMessage
+                    name="title"
+                    component="div"
+                    className="error"
+                  />
+                  <label>Auteur</label>
+                  <Field
+                    name="author"
+                    type="text"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFieldValue("author", value);
+                      setFormValues((prev) => ({
+                        ...prev,
+                        author: value,
+                      }));
+                    }}
+                  />
+                  <ErrorMessage
+                    name="author"
+                    component="div"
+                    className="error"
+                  />
+                  <label>Date</label>
+                  <Field
+                    name="date"
+                    type="date"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFieldValue("date", value);
+                      setFormValues((prev) => ({
+                        ...prev,
+                        date: value,
+                      }));
+                    }}
+                  />
+                  <ErrorMessage name="date" component="div" className="error" />
+                  <label>Catégorie</label>
+                  <Field
+                    as="select"
+                    name="category"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFieldValue("category", value);
+                      setFormValues((prev) => ({
+                        ...prev,
+                        category: value,
+                      }));
+                    }}
+                  >
+                    <option value="">Sélectionner une catégorie</option>
+                    <option value="Moi">Moi & Mon Parcours</option>
+                    <option value="Projets">Mes Projets & Développement</option>
+                    <option value="Geek">Livres, BD & Culture Geek</option>
+                    <option value="Series">Films & Séries</option>
+                    <option value="Sports">Sport & Bien-être</option>
+                    <option value="Inspirations">
+                      Mes Inspirations & Motivations
+                    </option>
+                    <option value="Conseils">
+                      Conseils & Retours d’Expérience
+                    </option>
+                  </Field>
+                  <ErrorMessage
+                    name="category"
+                    component="div"
+                    className="error"
+                  />
+                  <label>Image Principale</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const imageUrl = URL.createObjectURL(file);
+                        setFieldValue("image", imageUrl);
+                        setFormValues((prev) => ({
+                          ...prev,
+                          image: imageUrl,
+                        }));
+                      }
+                    }}
+                  />
+                  <ErrorMessage name="image" component="div" />
+                  {values.image && (
+                    <div className="image-preview">
+                      <img
+                        src={values.image}
+                        alt="Aperçu"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    </div>
+                  )}
+                  <div className="label-container">
+                    <label>Contenu</label>
+                    <MarkdownInfo />
+                  </div>
+
+                  <ReactMde
+                    value={markdown}
+                    onChange={setMarkdown}
+                    selectedTab={selectedTab}
+                    onTabChange={setSelectedTab}
+                    disablePreview={true}
+                    commands={{
+                      h4: customCommandH4,
+                      indentation: customCommand,
+
+                      h5: customCommandH5,
+                    }}
+                    toolbarCommands={[
+                      [
+                        "header",
+                        "h4",
+                        "h5",
+                        "indentation",
+                        "bold",
+                        "italic",
+                        "image",
+                      ],
+                    ]}
+                    generateMarkdownPreview={(markdown) =>
+                      Promise.resolve(converter.makeHtml(markdown))
+                    }
+                  />
+                  <button
+                    type="submit"
+                    className="btn"
+                    style={{ marginTop: "1rem" }}
+                  >
+                    Publier
+                  </button>
                 </div>
-              )}
-              <div className="label-container">
-                <label>Contenu</label>
-                <MarkdownInfo />
-              </div>
-
-              <ReactMde
-                value={markdown}
-                onChange={setMarkdown}
-                selectedTab={selectedTab}
-                onTabChange={setSelectedTab}
-                disablePreview={true}
-                commands={{
-                  h4: customCommandH4,
-                  indentation: customCommand,
-
-                  h5: customCommandH5,
-                }}
-                toolbarCommands={[
-                  [
-                    "header",
-                    "h4",
-                    "h5",
-                    "indentation",
-                    "bold",
-                    "italic",
-                    "image",
-                  ],
-                ]}
-                generateMarkdownPreview={(markdown) =>
-                  Promise.resolve(converter.makeHtml(markdown))
-                }
-              />
-              <button
-                type="submit"
-                className="btn"
-                style={{ marginTop: "1rem" }}
-              >
-                Publier
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      )}
     </div>
   );
 };

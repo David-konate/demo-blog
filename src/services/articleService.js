@@ -22,12 +22,12 @@ const useArticles = () => {
     try {
       // Requête API
       const queryParams = new URLSearchParams({ page, category }).toString();
-      // const response = await fetch(
-      //   `https://blog-api.david-konate.fr/api/articles?${queryParams}`
-      // );
       const response = await fetch(
-        `http://localhost:3000/api/articles?${queryParams}`
+        `https://blog-api.david-konate.fr/api/articles?${queryParams}`
       );
+      // const response = await fetch(
+      //   `http://localhost:3000/api/articles?${queryParams}`
+      // );
 
       if (!response.ok) {
         throw new Error("Erreur lors de la récupération des articles.");
@@ -176,6 +176,7 @@ const useArticles = () => {
   };
 
   const saveArticle = async (articleData) => {
+    setLoading(true);
     try {
       const uniqueSlug = await checkOrGenerateSlug(articleData.slug);
 
@@ -212,7 +213,7 @@ const useArticles = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       } else {
         throw new Error("Erreur lors de l'enregistrement de l'article");
@@ -221,30 +222,14 @@ const useArticles = () => {
       console.error("Erreur lors de l'enregistrement de l'article :", error);
       throw error;
     } finally {
+      setLoading(false);
       navigate("/blog-list/");
-    }
-  };
-
-  // Supprimer un article par son slug
-  const deleteArticle = async (slug) => {
-    try {
-      const response = await trackerApi.delete(`article/${slug}`);
-      if (response.status === 200) {
-        fetchArticles(); // Rafraîchir la liste après suppression
-      } else {
-        throw new Error("Erreur lors de la suppression de l'article");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la suppression de l'article :", error);
-      throw error;
-    } finally {
-      navigate("/blog-list");
     }
   };
 
   // Mettre à jour un article existant
   const updateArticle = async (updatedData) => {
-    console.log("Données mises à jour :", updatedData);
+    setLoading(true);
     try {
       // Sauvegarde de l’image titre uniquement si elle n’est pas déjà une URL Cloudinary
       let imageTitre = updatedData.image;
@@ -262,7 +247,6 @@ const useArticles = () => {
         ...updatedData,
         image: imageTitre,
       });
-
       // Création d'un objet Blob avec le contenu Markdown
       const markdownBlob = new Blob([markdownContent], {
         type: "text/markdown",
@@ -272,14 +256,13 @@ const useArticles = () => {
       const markdownFile = new File([markdownBlob], `${updatedData.slug}.md`, {
         type: "text/markdown",
       });
-      console.log("Markdown file:", markdownFile);
       // Mise à jour des données avec le fichier Markdown
       const formData = new FormData();
-      formData.append("markdown", markdownFile); // Ajout du fichier Markdown
+      formData.append("markdown", markdownBlob, `${updatedData.slug}.md`);
 
-      // Envoi des données à l'API pour la mise à jour
+      // Envoi de la requête
       const response = await trackerApi.put(
-        `update/${updatedData.slug}`, // Utilisation du slug actuel pour l'URL
+        `update/${updatedData.slug}`,
         formData,
         {
           headers: {
@@ -298,7 +281,27 @@ const useArticles = () => {
       console.error("Erreur lors de la mise à jour de l'article :", error);
       throw error;
     } finally {
+      setLoading(false);
       navigate("/blog-list");
+    }
+  };
+
+  // Supprimer un article par son slug
+  const deleteArticle = async (slug) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.delete(`article/${slug}`);
+      if (response.status === 200) {
+        fetchArticles(); // Rafraîchir la liste après suppression
+      } else {
+        throw new Error("Erreur lors de la suppression de l'article");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'article :", error);
+      throw error;
+    } finally {
+      setLoading(false);
+      getArticleCountByCategory();
     }
   };
 
@@ -372,6 +375,7 @@ const useArticles = () => {
     loading, // Indicateur de chargement pour les articles
     error, // Erreur si quelque chose ne va pas lors de la récupération des articles
     markdown, // Contenu markdown de l'article sélectionné
+    setMarkdown,
     fetchArticleBySlug, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
@@ -383,6 +387,7 @@ const useArticles = () => {
     updateArticle,
     categoriesCount,
     getArticleCountByCategory,
+    loading,
   };
 };
 

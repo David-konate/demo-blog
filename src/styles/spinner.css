@@ -1,0 +1,104 @@
+/* Conteneur principal */
+.atom-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Noyau central */
+.core {
+  width: 15px;
+  height: 15px;
+  background: cyan;
+  border-radius: 50%;
+  box-shadow: 0 0 10px cyan;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Orbites */
+.orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+/* Chaque orbite tourne sur un axe différent */
+.orbit-x {
+  border-top: 2px solid cyan;
+  transform: rotateX(75deg);
+  animation: spin-x 3s linear infinite;
+}
+
+.orbit-y {
+  border-left: 3px solid cyan;
+  transform: rotateY(75deg);
+  animation: spin-y 2.5s linear infinite;
+}
+
+.orbit-z {
+  border-right: 3px solid cyan;
+  transform: rotateZ(75deg);
+  animation: spin-z 2s linear infinite;
+}
+
+/* Ajout des points lumineux en orbite */
+.orbit::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: cyan;
+  border-radius: 50%;
+  box-shadow: 0 0 10px cyan;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Animations */
+@keyframes spin-x {
+  0% {
+    transform: rotateX(75deg) rotate(0deg);
+  }
+  100% {
+    transform: rotateX(75deg) rotate(360deg);
+  }
+}
+
+@keyframes spin-y {
+  0% {
+    transform: rotateY(75deg) rotate(0deg);
+  }
+  100% {
+    transform: rotateY(75deg) rotate(360deg);
+  }
+}
+
+@keyframes spin-z {
+  0% {
+    transform: rotateZ(75deg) rotate(0deg);
+  }
+  100% {
+    transform: rotateZ(75deg) rotate(360deg);
+  }
+}
+
+/* Animation du noyau */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}

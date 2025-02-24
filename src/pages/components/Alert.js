@@ -23,12 +23,17 @@ const Alert = ({
   return (
     <div className="modal-overlay">
       <div className={`modal-content alert alert-${type}`}>
-        <h3 className="alert-title">Suppression d'un article</h3>{" "}
-        {/* Titre ajouté */}
+        <h3 className="alert-title">Suppression d'un article</h3>
         <span>{message}</span>
         <div className="alert-actions">
           {onConfirm && (
-            <button className="alert-btn confirm" onClick={onConfirm}>
+            <button
+              className="alert-btn confirm"
+              onClick={() => {
+                onConfirm(); // Exécuter l'action
+                onClose(); // Fermer la modal après l'action
+              }}
+            >
               Confirmer
             </button>
           )}

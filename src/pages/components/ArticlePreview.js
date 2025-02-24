@@ -1,6 +1,7 @@
 import React from "react";
 import Showdown from "showdown";
 import { useArticleContext } from "../../context/use-article-context";
+import "../../styles/blog-post.css";
 
 const ArticlePreview = () => {
   const { articlePreview } = useArticleContext();
@@ -28,6 +29,18 @@ const ArticlePreview = () => {
     simpleLineBreaks: true,
     extensions: ["size-images"],
   });
+
+  // Fonction pour vérifier si la date est valide
+  const isValidDate = (dateString) => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  };
+
+  // Si la date n'est pas valide, on affiche une date par défaut
+  const formattedDate =
+    isValidDate(articlePreview.date) && articlePreview.date !== "Date inconnue"
+      ? new Intl.DateTimeFormat("fr-FR").format(Date.parse(articlePreview.date))
+      : "Date inconnue";
 
   return (
     <div className="article-preview">
@@ -71,14 +84,13 @@ const ArticlePreview = () => {
             {articlePreview.title || "Titre de l'article"}
           </h1>
           <p className="article-preview-author">
-            Par {articlePreview.author || "Auteur"} le{" "}
-            {articlePreview.date || "Date inconnue"}
+            Par {articlePreview.author || "Auteur"} le {formattedDate}
           </p>
         </div>
       </header>
 
       <div
-        className="markdown-preview"
+        className="article-markdown-content"
         dangerouslySetInnerHTML={{
           __html: converter.makeHtml(articlePreview.content || ""),
         }}

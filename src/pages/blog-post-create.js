@@ -1,21 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import CreatePost from "./components/createPost";
+import CreatePost from "./components/CreatePost";
 import ArticlePreview from "./components/ArticlePreview";
 import BlogPreview from "./components/BlogPreview";
 import "../styles/blog-editor.css";
 import Layout from "./components/layout";
 
 const CreateArticlePage = () => {
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
-
-  if (!isReady) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Layout>
       <div className="blog-editor-preview-container">

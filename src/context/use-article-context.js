@@ -10,6 +10,7 @@ export const ArticleProvider = ({ children }) => {
     loading, // Indicateur de chargement pour les articles
     error, // Erreur si quelque chose ne va pas lors de la récupération des articles
     markdown, // Contenu markdown de l'article sélectionné
+    setMarkdown,
     fetchArticleBySlug, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
@@ -45,6 +46,7 @@ export const ArticleProvider = ({ children }) => {
         loading,
         error,
         markdown,
+        setMarkdown,
         fetchArticleBySlug,
         saveArticle,
         saveImages,

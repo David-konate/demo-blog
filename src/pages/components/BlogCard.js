@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "gatsby";
-import { FiEdit, FiTrash2 } from "react-icons/fi"; // Import des icônes
+import { Link, navigate } from "gatsby"; // Importer navigate de Gatsby
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 import "../../styles/blog-card.css";
 
 const BlogCard = ({
@@ -11,10 +11,21 @@ const BlogCard = ({
   date,
   resume,
   slug,
-  protectedPost, // Renommé en protectedPost pour éviter la confusion avec le mot-clé `protected`
+  protectedPost,
   onEdit,
   onDelete,
 }) => {
+  const handleEditClick = () => {
+    navigate("/blog-update", {
+      state: { slug: slug }, // Passe le slug dans le state
+    });
+  };
+
+  const formattedDate =
+    date && !isNaN(Date.parse(date))
+      ? new Intl.DateTimeFormat("fr-FR").format(new Date(date))
+      : "Date inconnue";
+
   return (
     <div className="blog-card-container">
       <img
@@ -29,8 +40,9 @@ const BlogCard = ({
       <div className="blog-card-content">
         <div>
           <p className="blog-card-date">
-            {date} par {author}
+            {formattedDate} par {author}
           </p>
+
           <p className="blog-card-title">{title}</p>
           <p className="blog-card-resume">{resume}</p>
         </div>
@@ -46,7 +58,7 @@ const BlogCard = ({
 
           {!protectedPost && (
             <div className="blog-card-actions">
-              <button className="blog-card-btn edit" onClick={() => onEdit()}>
+              <button className="blog-card-btn edit" onClick={handleEditClick}>
                 <FiEdit />
               </button>
               <button

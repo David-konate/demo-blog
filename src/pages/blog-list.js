@@ -7,6 +7,7 @@ import "../styles/list-blog.css";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Layout from "./components/layout";
 import { navigate } from "gatsby";
+import Spinner from "./components/Spinner";
 
 const AllArticles = () => {
   const {
@@ -15,9 +16,8 @@ const AllArticles = () => {
     getArticleCountByCategory,
     categoriesCount,
     deleteArticle,
-    updateArticle,
+    loading,
   } = useArticles();
-  const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 3;
@@ -27,19 +27,11 @@ const AllArticles = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      console.log(
-        "Fetching articles for page:",
-        currentPage,
-        "category:",
-        selectedCategory
-      );
       await fetchArticles(
         currentPage,
         selectedCategory !== "Tous" ? selectedCategory : ""
       );
       await getArticleCountByCategory();
-      setLoading(false);
     };
 
     fetchData();
@@ -91,7 +83,11 @@ const AllArticles = () => {
     console.log("Page sélectionnée:", page);
   };
 
-  return (
+  return loading ? (
+    <Layout>
+      <Spinner />
+    </Layout>
+  ) : (
     <Layout>
       <div className="blog-container">
         <div className="blog-header">

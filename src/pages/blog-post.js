@@ -5,6 +5,7 @@ import Layout from "./components/layout";
 import { SEO } from "./components/seo";
 import Showdown from "showdown";
 import "../styles/blog-post.css";
+import Spinner from "./components/Spinner";
 
 const BlogPost = () => {
   Showdown.extension("size-images", function () {
@@ -45,8 +46,13 @@ const BlogPost = () => {
       navigate("/blog-list"); // Redirige si pas de slug
     }
   }, [slug]);
-  if (loading) return <p>Chargement...</p>;
-  if (!article) return <p>Article introuvable.</p>;
+  if (loading)
+    return (
+      <p>
+        <Spinner></Spinner>
+      </p>
+    );
+
   return (
     <Layout>
       <SEO
@@ -95,15 +101,15 @@ const BlogPost = () => {
               >
                 <h1 className="article-view-title">{article.title}</h1>
                 <p className="article-view-meta">
-                  Par {article.author}, le {article.date}
+                  Par {article.author}, le{" "}
+                  {new Intl.DateTimeFormat("fr-FR").format(
+                    Date.parse(article.date || "Date inconnue")
+                  )}
                 </p>
               </div>
             </div>
 
             <div className="article-view-content">
-              {/* <ReactMarkdown className="article-markdown-content">
-                {markdown}
-              </ReactMarkdown> */}
               <div
                 className="article-markdown-content"
                 dangerouslySetInnerHTML={{
