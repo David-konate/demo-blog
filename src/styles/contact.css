@@ -1,4 +1,4 @@
-/* ContactModal.css */
+/* Overlay du modal */
 .contact-modal-overlay {
   position: fixed;
   top: 0;
@@ -13,6 +13,7 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
+/* Fenêtre du modal */
 .contact-modal {
   background: var(--modal-background);
   color: var(--text-color);
@@ -25,13 +26,47 @@
   animation: slideUp 0.3s ease-in-out;
 }
 
+/* En-tête avec téléphone et fermeture */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Bouton téléphone */
+.phone-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 2px solid var(--primary-color);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.phone-btn:hover {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0px 0px 12px var(--primary-color);
+}
+
+.phone-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Bouton de fermeture */
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.5rem;
   background: none;
   border: none;
+  font-size: 1.5rem;
   color: var(--primary-color);
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
@@ -39,8 +74,10 @@
 
 .close-btn:hover {
   transform: scale(1.2);
+  color: red;
 }
 
+/* Titre */
 h2 {
   text-align: center;
   margin-bottom: 1rem;
@@ -50,6 +87,7 @@ h2 {
   -webkit-text-fill-color: transparent;
 }
 
+/* Formulaire */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -82,6 +120,7 @@ textarea:focus {
   box-shadow: 0px 0px 8px var(--primary-color);
 }
 
+/* Bouton soumission */
 .submit-btn {
   width: 100%;
   padding: 10px;
@@ -99,6 +138,14 @@ textarea:focus {
 .submit-btn:hover {
   background: var(--primary-color);
   box-shadow: 0px 0px 12px var(--primary-color);
+}
+
+/* Signature */
+.signature {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
 }
 
 /* Animations */
