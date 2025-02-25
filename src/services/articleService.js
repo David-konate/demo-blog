@@ -176,6 +176,7 @@ const useArticles = () => {
   };
 
   const saveArticle = async (articleData) => {
+    console.log({ articleData });
     setLoading(true);
     try {
       const uniqueSlug = await checkOrGenerateSlug(articleData.slug);

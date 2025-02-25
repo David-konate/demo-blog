@@ -9,9 +9,11 @@ import { useArticleContext } from "../../context/use-article-context";
 import useArticles from "../../services/articleService";
 import Spinner from "./Spinner";
 import validationSchema from "../../utils/validationSchema";
+import useCategories from "../../services/categoryService";
 
 const CreatePost = () => {
   const { setArticlePreview } = useArticleContext();
+  const { categories, getCategories } = useCategories();
   const { saveArticle, loading } = useArticles();
   const [selectedTab, setSelectedTab] = useState("write");
 
@@ -26,6 +28,7 @@ const CreatePost = () => {
   });
 
   useEffect(() => {
+    getCategories();
     setArticlePreview({
       ...formValues,
       content: markdown,
@@ -189,26 +192,21 @@ const CreatePost = () => {
                     as="select"
                     name="category"
                     onChange={(e) => {
-                      const value = e.target.value;
-                      setFieldValue("category", value);
+                      const selectedCategoryId = e.target.value;
+                      setFieldValue("category", selectedCategoryId);
                       setFormValues((prev) => ({
                         ...prev,
-                        category: value,
+                        category: selectedCategoryId,
                       }));
                     }}
                   >
-                    <option value="">Sélectionner une catégorie</option>
-                    <option value="Moi">Moi & Mon Parcours</option>
-                    <option value="Projets">Mes Projets & Développement</option>
-                    <option value="Geek">Livres, BD & Culture Geek</option>
-                    <option value="Series">Films & Séries</option>
-                    <option value="Sports">Sport & Bien-être</option>
-                    <option value="Inspirations">
-                      Mes Inspirations & Motivations
-                    </option>
-                    <option value="Conseils">
-                      Conseils & Retours d’Expérience
-                    </option>
+                    <option value="">Sélectionner une catégorie</option>{" "}
+                    {/* Option vide au départ */}
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.label_category}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
                     name="category"
