@@ -23,7 +23,10 @@ const Alert = ({
   return (
     <div className="modal-overlay">
       <div className={`modal-content alert alert-${type}`}>
-        <h3 className="alert-title">Suppression d'un article</h3>
+        <h3 className="alert-title">
+          <strong>{type}</strong>
+        </h3>
+
         <span>{message}</span>
         <div className="alert-actions">
           {onConfirm && (

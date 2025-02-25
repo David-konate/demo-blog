@@ -22,12 +22,12 @@ const useArticles = () => {
     try {
       // Requête API
       const queryParams = new URLSearchParams({ page, category }).toString();
-      const response = await fetch(
-        `https://blog-api.david-konate.fr/api/articles?${queryParams}`
-      );
       // const response = await fetch(
-      //   `http://localhost:3000/api/articles?${queryParams}`
+      //   `https://blog-api.david-konate.fr/api/articles?${queryParams}`
       // );
+      const response = await fetch(
+        `http://localhost:3000/api/articles?${queryParams}`
+      );
 
       if (!response.ok) {
         throw new Error("Erreur lors de la récupération des articles.");

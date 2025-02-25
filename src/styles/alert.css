@@ -16,6 +16,10 @@
     animation: fadeIn 0.3s ease-in-out forwards;
 }
   
+.alert-title {
+    font-weight: bold;
+  }
+  
 /* Animation de l'apparition du modal */
 @keyframes fadeIn {
     0% {
@@ -60,7 +64,7 @@
     position: relative;
     background: #fff;
     padding: 10px 20px;
-    font-size: 18px;
+    font-size: 26px;
     font-weight: bold;
     border-radius: 8px 8px 0 0; /* Arrondi en haut seulement */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -129,23 +133,44 @@
     color: #155724;
     border: 1px solid #c3e6cb;
 }
+.alert-success h3{
+    color: #155724;
+    font-size: 40px;
+    font-weight: bold;
+}
 
 .alert-error {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+.alert-error h3{
+    color: #721c24;
+    font-size: 40px;
+    font-weight: bold;
+}
 
 .alert-warning {
     background: #fff3cd;
     color: #856404;
     border: 1px solid #ffeeba;
+  
+}
+.alert-warning h3{
+    color: #856404;
+    font-size: 40px;
+    font-weight: bold;
 }
 
 .alert-info {
     background: #d1ecf1;
     color: #0c5460;
     border: 1px solid #bee5eb;
+}
+.alert-info h3{
+    color: #0c5460;
+    font-size: 40px;
+    font-weight: bold;
 }
 
 .alert-success .alert-btn.confirm {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+
 import Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import ReactMde from "react-mde";
@@ -8,6 +8,7 @@ import MarkdownInfo from "./markdownInfo";
 import { useArticleContext } from "../../context/use-article-context";
 import useArticles from "../../services/articleService";
 import Spinner from "./Spinner";
+import validationSchema from "../../utils/validationSchema";
 
 const CreatePost = () => {
   const { setArticlePreview } = useArticleContext();
@@ -108,15 +109,7 @@ const CreatePost = () => {
           <h1 className="blog-creator-title">Créer un article pour le blog</h1>
           <Formik
             initialValues={formValues}
-            validationSchema={Yup.object({
-              title: Yup.string()
-                .required("Titre requis")
-                .max(50, "Le titre ne doit pas dépasser 50 caractères"),
-              author: Yup.string().required("Auteur requis"),
-              date: Yup.string().required("Date requise"),
-              category: Yup.string().required("Catégorie requise"),
-              slug: Yup.string().required("Slug requis"),
-            })}
+            validationSchema={validationSchema}
             onSubmit={(values) => {
               console.log("Article soumis :", values, markdown);
               saveArticle({ ...values, content: markdown, setLoading: true });
