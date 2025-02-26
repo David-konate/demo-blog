@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Alert from "./components/Alert"; // Assurez-vous d'importer l'alerte
+import Alert from "./components/Alert";
 import BlogCard from "./components/BlogCard";
 import useArticles from "../services/articleService";
 import ButtonFilter from "./components/ButtonFilter";
@@ -9,6 +9,7 @@ import Layout from "./components/layout";
 import { navigate } from "gatsby";
 import Spinner from "./components/Spinner";
 import { Helmet } from "react-helmet";
+import useCategories from "../services/categoryService";
 
 const AllArticles = () => {
   const {
@@ -19,12 +20,14 @@ const AllArticles = () => {
     deleteArticle,
     loading,
   } = useArticles();
+  const { getCategories, categories } = useCategories();
+
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 3;
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [articleToDelete, setArticleToDelete] = useState(null);
-  const [alertMessage, setAlertMessage] = useState(null); // Ajouter un état pour l'alerte
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +36,7 @@ const AllArticles = () => {
         selectedCategory !== "Tous" ? selectedCategory : ""
       );
       await getArticleCountByCategory();
+      await getCategories();
     };
 
     fetchData();
@@ -46,29 +50,32 @@ const AllArticles = () => {
     (total, { count }) => total + count,
     0
   );
+
   const categoryCounts = categoriesCount.reduce((acc, { count, category }) => {
     acc[category] = count;
     return acc;
   }, {});
 
-  const categories = [
+  const categoriesAll = [
     "Tous",
     ...categoriesCount.map(({ category }) => category),
   ];
 
   const totalPages = Math.ceil(
-    (categoryCounts[selectedCategory] || totalArticles) / articlesPerPage
+    (categoryCounts[selectedCategory] || articles.length || totalArticles) /
+      articlesPerPage
   );
 
   const handleDeleteRequest = (article) => {
     setArticleToDelete(article);
     setAlertMessage({
       message: `Voulez-vous vraiment supprimer l'article "${article.title}" ?`,
-      type: "warning", //"success", "error", "warning", "info"
-      duration: 0, // Set duration to 0 so the alert remains until action
-      onConfirm: () => deleteArticle(article.slug), // Add a confirmation handler
+      type: "warning",
+      duration: 0,
+      onConfirm: () => deleteArticle(article.slug),
     });
   };
+
   const handleUpdate = (article) => {
     navigate("/blog-update", { state: { slug: article.slug } });
   };
@@ -81,7 +88,6 @@ const AllArticles = () => {
     } else if (typeof page === "number") {
       setCurrentPage(page);
     }
-    console.log("Page sélectionnée:", page);
   };
 
   return loading ? (
@@ -101,38 +107,6 @@ const AllArticles = () => {
           content="blog, tech, développement, sport, culture, articles, web"
         />
         <meta name="author" content="Ton Nom" />
-
-        {/* Open Graph pour Facebook & LinkedIn */}
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content="Notre Blog - Articles sur la Tech, le Sport et plus"
-        />
-        <meta
-          property="og:description"
-          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
-        />
-        <meta property="og:url" content="https://ton-site.com/blog" />
-        <meta
-          property="og:image"
-          content="https://ton-site.com/images/blog-banner.jpg"
-        />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Notre Blog - Articles sur la Tech, le Sport et plus"
-        />
-        <meta
-          name="twitter:description"
-          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
-        />
-        <meta
-          name="twitter:image"
-          content="https://ton-site.com/images/blog-banner.jpg"
-        />
-        <meta name="twitter:site" content="@TonTwitter" />
       </Helmet>
       <div className="blog-container">
         <div className="blog-header">
@@ -142,7 +116,7 @@ const AllArticles = () => {
             développement, la tech, le sport, la culture et bien plus encore.
           </p>
           <div className="category-filters">
-            {categories.map((category, index) => (
+            {categoriesAll.map((category, index) => (
               <ButtonFilter
                 key={index}
                 isActive={selectedCategory === category}
@@ -166,23 +140,29 @@ const AllArticles = () => {
             <p className="loading-text">Chargement des articles...</p>
           ) : (
             <div className="articles-grid">
-              {displayedArticles.map((post, index) => (
-                <BlogCard
-                  key={post.slug}
-                  title={post.title}
-                  image={post.image}
-                  category={post.category}
-                  author={post.author}
-                  slug={post.slug}
-                  date={post.date}
-                  content={post.content}
-                  sections={post.sections}
-                  protectedPost={post.protectedPost}
-                  link={`/blog-post`}
-                  onEdit={() => handleUpdate(post)}
-                  onDelete={handleDeleteRequest} // Utiliser handleDeleteRequest pour afficher l'alerte
-                />
-              ))}
+              {displayedArticles.map((post) => {
+                const categoryObj = categories.find(
+                  (cat) => cat.id.toString() === post.category
+                );
+
+                return (
+                  <BlogCard
+                    key={post.slug}
+                    title={post.title}
+                    image={post.image}
+                    category={categoryObj ? categoryObj.label_category : ""}
+                    author={post.author}
+                    slug={post.slug}
+                    date={post.date}
+                    content={post.content}
+                    sections={post.sections}
+                    protectedPost={post.protectedPost}
+                    link={`/blog-post`}
+                    onEdit={() => handleUpdate(post)}
+                    onDelete={handleDeleteRequest}
+                  />
+                );
+              })}
             </div>
           )}
 
@@ -214,13 +194,14 @@ const AllArticles = () => {
             </button>
           </div>
         </div>
+
         {alertMessage && (
           <Alert
             message={alertMessage.message}
             type={alertMessage.type}
             duration={alertMessage.duration}
-            visible={Boolean(alertMessage)} // On passe visible en fonction de l'état
-            onClose={() => setAlertMessage(null)} // On remet alertMessage à null
+            visible={Boolean(alertMessage)}
+            onClose={() => setAlertMessage(null)}
             onConfirm={alertMessage.onConfirm}
           />
         )}
