@@ -1,0 +1,320 @@
+/* Global Styles */
+@import "./global.css";
+
+/* Login Page */
+.login-container {
+  display: flex;
+  justify-content: center;
+
+
+  background-color: var(--background-color);
+}
+
+.login-box {
+  background: var(--input-background);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+/* Input Fields */
+.login-field {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.login-field label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 5px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.password-container .login-input {
+  border: none;
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.password-toggle {
+  cursor: pointer;
+  padding: 10px;
+  font-size: 18px;
+  color: var(--secondary-color);
+}
+
+/* Buttons */
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.login-button {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 48%;
+  transition: 0.3s;
+}
+
+.login-button:hover {
+  background: var(--secondary-color);
+}
+
+.login-button.secondary {
+  background: var(--border-color);
+  color: var(--text-color);
+}
+
+.login-button.secondary:hover {
+  background: var(--focus-background);
+}
+
+/* Signup Link */
+.signup-link {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.signup-button {
+  color: var(--primary-color);
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.signup-button:hover {
+  text-decoration: underline;
+}
+
+/* Social Login Buttons */
+.social-login-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.social-login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+  margin-bottom: 10px;
+}
+
+.google-login {
+  background-color: #db4437;
+  color: white;
+}
+
+.google-login:hover {
+  background-color: #c1351d;
+}
+
+.facebook-login {
+  background-color: #3b5998;
+  color: white;
+}
+
+.facebook-login:hover {
+  background-color: #2d4373;
+}
+
+/* Signup Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--overlay-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--modal-background);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px var(--modal-shadow);
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+/* Form Group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--text-color);
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-background);
+  font-size: 16px;
+  width: 100%;
+}
+
+/* Buttons for Modal */
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0866d4;
+}
+
+.btn-secondary {
+  background: var(--secondary-color);
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #0f0f36;
+}
+.login-icon-container {
+  text-align: center;
+
+  padding: 20px;
+}
+
+.login-icon-title {
+  font-size: 18px;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Style du GoogleOAuthProvider */
+.google-provider-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Boutons de connexion */
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
+  padding: 12px;
+  margin: 12px auto;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-button .login-icon {
+  margin-right: 10px;
+  font-size: 22px;
+}
+
+/* Bouton Google */
+.google {
+  background-color: #db4437;
+  color: white;
+}
+
+.google:hover {
+  background-color: #c1351d;
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(219, 68, 55, 0.3);
+}
+
+/* Bouton Facebook */
+.facebook {
+  background-color: #1877f2;
+  color: white;
+}
+
+.facebook:hover {
+  background-color: #0e5aaf;
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(24, 119, 242, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-button {
+    width: 90%;
+  }
+}

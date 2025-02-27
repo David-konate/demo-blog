@@ -26,26 +26,26 @@ const BlogPost = () => {
     extensions: ["size-images"],
   });
   const location = useLocation();
-  const { fetchArticleBySlug, article, loading, markdown } = useArticles();
+  const { fetchArticleById, article, loading, markdown } = useArticles();
 
   // Vérifie si un slug est dans l'état ou dans sessionStorage
-  const [slug, setSlug] = useState(() => {
+  const [id, setId] = useState(() => {
     if (typeof window !== "undefined") {
       // Vérifie si on est dans un environnement client avant d'utiliser sessionStorage
-      return location.state?.slug || sessionStorage.getItem("slug");
+      return location.state?.id || sessionStorage.getItem("id");
     }
-    return location.state?.slug || null;
+    return location.state?.id || null;
   });
 
   useEffect(() => {
-    if (slug) {
-      sessionStorage.setItem("slug", slug); // Sauvegarde le slug en session
-      fetchArticleBySlug(slug);
+    if (id) {
+      sessionStorage.setItem("id", id); // Sauvegarde le slug en session
+      fetchArticleById(id);
     }
-    if (!slug) {
+    if (!id) {
       navigate("/blog-list"); // Redirige si pas de slug
     }
-  }, [slug]);
+  }, [id]);
   if (loading)
     return (
       <p>
@@ -60,7 +60,7 @@ const BlogPost = () => {
         description={
           article?.content?.slice(0, 150) || "Article en cours de chargement"
         }
-        slug={slug}
+        id={id}
       />
       <div className="article-view">
         {loading ? (

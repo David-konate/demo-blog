@@ -25,19 +25,6 @@ export const ArticleProvider = ({ children }) => {
     getArticleCountByCategory,
   } = useArticles();
 
-  // Vérification que saveArticle et les autres données sont bien chargées avant de rendre les enfants
-  const [isReady, setIsReady] = useState(false);
-
-  // useEffect(() => {
-  //   if (saveArticle && articles !== undefined) {
-  //     setIsReady(true); // Tout est prêt, on peut passer à l'affichage des enfants
-  //   }
-  // }, [saveArticle, articles]);
-
-  // if (!isReady) {
-  //   return <div>Loading...</div>; // Affichage d'un message de chargement jusqu'à ce que le contexte soit prêt
-  // }
-
   return (
     <ArticleContext.Provider
       value={{

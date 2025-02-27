@@ -4,6 +4,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import "../../styles/blog-card.css";
 
 const BlogCard = ({
+  id,
   title,
   image,
   category,
@@ -17,15 +18,13 @@ const BlogCard = ({
 }) => {
   const handleEditClick = () => {
     navigate("/blog-update", {
-      state: { slug: slug }, // Passe le slug dans le state
+      state: { id: id }, // Passe le slug dans le state
     });
   };
-
   const formattedDate =
     date && !isNaN(Date.parse(date))
       ? new Intl.DateTimeFormat("fr-FR").format(new Date(date))
       : "Date inconnue";
-
   return (
     <div className="blog-card-container">
       <img
@@ -48,11 +47,7 @@ const BlogCard = ({
         </div>
 
         <div className="blog-card-footer">
-          <Link
-            to={`/blog-post`}
-            state={{ slug: slug }}
-            className="blog-card-link"
-          >
+          <Link to={`/blog-post`} state={{ id: id }} className="blog-card-link">
             LIRE PLUS
           </Link>
 

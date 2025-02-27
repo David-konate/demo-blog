@@ -52,7 +52,7 @@ const useArticles = () => {
               content.match(regex)?.[1] || "Non spécifié";
 
             return {
-              public_id: article.public_id,
+              public_id: article.id,
               title: extract(/title:\s*"?(.+?)"?$/m),
               author: extract(/author:\s*"?(.+?)"?$/m),
               date: extract(/date:\s*"?(.+?)"?$/m),
@@ -85,10 +85,10 @@ const useArticles = () => {
     }
   };
 
-  const fetchArticleBySlug = async (slug) => {
+  const fetchArticleById = async (id) => {
     setLoading(true);
     try {
-      const response = await trackerApi(`/article/${slug}`);
+      const response = await trackerApi(`/article/${id}`);
 
       const data = response.data; // Axios retourne déjà un objet JSON
       const article = data.data;
@@ -121,7 +121,7 @@ const useArticles = () => {
         extractMetadata(/category:\s*"?(.+?)"?$/m) || "Catégorie non trouvée";
       const image =
         extractMetadata(/image:\s*"?(.+?)"?$/m) || "Image non trouvée";
-      const slugExtracted = extractMetadata(/slug:\s*"?(.+?)"?$/m) || slug;
+      const slugExtracted = extractMetadata(/slug:\s*"?(.+?)"?$/m);
 
       // Supprimer les métadonnées du contenu Markdown
       const cleanedMarkdown = content.replace(/^---[\s\S]+?---/, "").trim();
@@ -176,7 +176,6 @@ const useArticles = () => {
   };
 
   const saveArticle = async (articleData) => {
-    console.log({ articleData });
     setLoading(true);
     try {
       const uniqueSlug = await checkOrGenerateSlug(articleData.slug);
@@ -377,7 +376,7 @@ const useArticles = () => {
     error, // Erreur si quelque chose ne va pas lors de la récupération des articles
     markdown, // Contenu markdown de l'article sélectionné
     setMarkdown,
-    fetchArticleBySlug, // Fonction pour récupérer un article spécifique par son slug
+    fetchArticleById, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
     checkOrGenerateSlug, // Fonction pour vérifier ou générer un slug unique

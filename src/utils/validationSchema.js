@@ -101,4 +101,56 @@ const updateArticleValidationSchema = Yup.object({
     ),
 });
 
-export { createArticleValidationSchema, updateArticleValidationSchema };
+// Schéma de validation pour l'inscription
+const signUpValidationSchema = Yup.object({
+  name: Yup.string()
+    .required("Le nom est requis.")
+    .max(50, "Le nom ne doit pas dépasser 50 caractères.")
+    .min(3, "Le nom doit contenir au moins 3 caractères.")
+    .matches(
+      /^[a-zA-ZÀ-ÿ\s'-]+$/,
+      "Le nom ne doit contenir que des lettres et espaces."
+    )
+    .trim()
+    .test(
+      "clean-xss",
+      "Le nom contient des caractères invalides.",
+      (value) => cleanXSS(value) === value
+    ),
+
+  email: Yup.string()
+    .required("L'email est requis.")
+    .email("Email invalide.")
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Format d'email invalide."
+    )
+    .trim()
+    .test(
+      "clean-xss",
+      "L'email contient des caractères invalides.",
+      (value) => cleanXSS(value) === value
+    ),
+
+  password: Yup.string()
+    .required("Le mot de passe est requis.")
+    .min(8, "Le mot de passe doit contenir au moins 8 caractères.")
+    .matches(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule.")
+    .matches(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule.")
+    .matches(/\d/, "Le mot de passe doit contenir au moins un chiffre.")
+    .matches(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Le mot de passe doit contenir au moins un caractère spécial."
+    )
+    .trim(),
+
+  confirmPassword: Yup.string()
+    .required("Veuillez confirmer votre mot de passe.")
+    .oneOf([Yup.ref("password")], "Les mots de passe ne correspondent pas."),
+});
+
+export {
+  createArticleValidationSchema,
+  updateArticleValidationSchema,
+  signUpValidationSchema,
+};

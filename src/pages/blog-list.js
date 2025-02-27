@@ -89,7 +89,6 @@ const AllArticles = () => {
       setCurrentPage(page);
     }
   };
-
   return loading ? (
     <Layout>
       <Spinner />
@@ -147,7 +146,8 @@ const AllArticles = () => {
 
                 return (
                   <BlogCard
-                    key={post.slug}
+                    key={post.public_id}
+                    id={post.public_id}
                     title={post.title}
                     image={post.image}
                     category={categoryObj ? categoryObj.label_category : ""}
