@@ -11,7 +11,7 @@ import "../../styles/global.css";
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer-content">
+      <div className="footer-grid">
         <div className="footer-links">
           <Link className="footer-link" to="/mentions-legales">
             Mentions Légales
@@ -20,7 +20,6 @@ const Footer = () => {
             Politique de Confidentialité
           </Link>
         </div>
-
         <div className="social-icons">
           <a
             className="social-icon"
@@ -55,12 +54,10 @@ const Footer = () => {
             <FaBasketballBall size={20} />
           </a>
         </div>
+        <p className="copyright">
+          © {new Date().getFullYear()} David Konaté. Tous droits réservés.
+        </p>
       </div>
-
-      {/* Déplace le copyright en dehors de .footer-content */}
-      <p className="copyright">
-        © {new Date().getFullYear()} David Konaté. Tous droits réservés.
-      </p>
     </footer>
   );
 };

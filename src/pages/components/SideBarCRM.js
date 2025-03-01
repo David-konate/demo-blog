@@ -1,85 +1,79 @@
 import React from "react";
-import { Link } from "gatsby";
-import "../../styles/sidebar.css";
-import useAuth from "../../services/authService";
+import { Link, navigate } from "gatsby";
+import "../../styles/layout-admin.css";
+import { isLoggedIn, logout } from "../../services/authService";
 
 const SideBar = () => {
-  const { isLoggedIn, logout } = useAuth();
   return (
-    <div className="sidebar-container">
-      {isLoggedIn() ? (
-        <aside className="sidebar-menu">
-          <p className="menu-label">General</p>
-          <ul className="menu-list">
-            <li>
-              <Link to="/" className="menu-link">
-                Site
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/admin" className="menu-link">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/profile" className="menu-link">
-                Profile
-              </Link>
-            </li>
-          </ul>
-          <p className="menu-label">Administration</p>
-          <ul className="menu-list">
-            <li>
-              <Link to="/app/all-users" className="menu-link">
-                Utilisateurs
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/blog-list" className="menu-link">
-                Articles
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/all-messages" className="menu-link">
-                Messages Utilisateurs
-              </Link>
-            </li>
-          </ul>
-          <p className="menu-label">Création</p>
-          <ul className="menu-list">
-            <li>
-              <Link to="/app/blog-post-create" className="menu-link">
-                Formulaire Articles
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/categories" className="menu-link">
-                Formulaire Categories
-              </Link>
-            </li>
-            <li>
-              <Link to="/app/user-create" className="menu-link">
-                Formulaire Utilisateurs
-              </Link>
-            </li>
-          </ul>
-          <p className="menu-label">Action</p>
-          <ul className="menu-list">
-            <li>
-              <Link
-                to="/"
-                className="menu-link logout"
-                onClick={() => {
-                  logout();
-                }}
-              >
-                Déconnexion
-              </Link>
-            </li>
-          </ul>
-        </aside>
-      ) : null}
-    </div>
+    <aside className="sidebar">
+      <nav className="menu">
+        <p className="menu-label">Général</p>
+        <ul className="menu-list">
+          <li>
+            <Link to="/">Site</Link>
+          </li>
+          <li>
+            <Link to="/app/admin">Dashboard</Link>
+          </li>
+          <li>
+            <Link to="/app/profile">Profil</Link>
+          </li>
+        </ul>
+
+        <p className="menu-label">Administration</p>
+        <ul className="menu-list">
+          <li>
+            <Link to="/app/allArticles">Articles</Link>
+          </li>
+          <li>
+            <Link to="/app/categories">Categories</Link>
+          </li>
+          <li>
+            <Link to="/app/allEvents">Utilsateurs</Link>
+          </li>
+          <li>
+            <Link to="/app/allSocieties">Messages</Link>
+          </li>
+        </ul>
+
+        <p className="menu-label">Création</p>
+        <ul className="menu-list">
+          <li>
+            <Link to="/app/blog-post-create">Créer un Article</Link>
+          </li>
+          <li>
+            <Link to="/app/categories">Créer un Catégorie</Link>
+          </li>
+          <li>
+            <Link to="/app/categories">Ecrire un Message</Link>
+          </li>
+          <li>
+            <Link to="/app/blog-post-create">Créer un Article</Link>
+          </li>
+          <li>
+            <Link to="/app/categories">Créer un Catégorie</Link>
+          </li>
+          <li>
+            <Link to="/app/categories">Ecrire un Message</Link>
+          </li>
+        </ul>
+
+        <p className="menu-label">Action</p>
+        <ul className="menu-list">
+          <li>
+            <Link
+              to="/"
+              onClick={(event) => {
+                event.preventDefault();
+                logout(() => navigate(`/app/login`));
+              }}
+            >
+              Déconnexion
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </aside>
   );
 };
 

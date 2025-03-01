@@ -4,7 +4,7 @@ import PrivateRoute from "../utils/privateRoute";
 import CreateCategoryPage from "./categories";
 import UpdateArticlePage from "./blog-update";
 import Admin from "./admin";
-import LayoutAdmin from "./components/LayoutAdmin";
+import LayoutAdmin from "./components/layoutAdmin";
 import Login from "./login";
 import CreateArticlePage from "./blog-post-create";
 
