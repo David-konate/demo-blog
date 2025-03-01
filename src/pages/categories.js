@@ -132,127 +132,123 @@ const CreateCategoryPage = () => {
   if (error) return <div className="error-text">Erreur : {error}</div>;
 
   return (
-    <Layout>
-      <div className="page-wrapper">
-        <div className="category-section">
-          <h1 className="title">Toutes les catégories</h1>
-          <input
-            type="text"
-            placeholder="Filtrer par nom de catégorie"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="category-search-input"
-          />
+    <div className="page-wrapper">
+      <div className="category-section">
+        <h1 className="title">Toutes les catégories</h1>
+        <input
+          type="text"
+          placeholder="Filtrer par nom de catégorie"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="category-search-input"
+        />
 
-          <div className="category-list">
-            <ul>
-              {currentCategories.map((category) => (
-                <li key={category.id} className="category-item">
-                  <FaEdit
-                    className="icon edit-icon"
-                    onClick={() => handleEdit(category.id)}
-                  />
-                  <span className="category-label">
-                    {category.label_category}
-                  </span>
-                  <FaTrash
-                    className="icon delete-icon"
-                    onClick={() => handleDelete(category.id)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="pagination">
-            <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Précédent
-            </button>
-            <span>{currentPage}</span>
-            <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Suivant
-            </button>
-          </div>
-
-          {showAlert && (
-            <Alert
-              message="Êtes-vous sûr de vouloir supprimer cette catégorie ?"
-              type="warning"
-              onClose={() => setShowAlert(false)}
-              onConfirm={confirmDelete}
-              visible={showAlert}
-            />
-          )}
+        <div className="category-list">
+          <ul>
+            {currentCategories.map((category) => (
+              <li key={category.id} className="category-item">
+                <FaEdit
+                  className="icon edit-icon"
+                  onClick={() => handleEdit(category.id)}
+                />
+                <span className="category-label">
+                  {category.label_category}
+                </span>
+                <FaTrash
+                  className="icon delete-icon"
+                  onClick={() => handleDelete(category.id)}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="create-category-section">
-          <h1 className="title">
-            {categoryToEdit ? "Modifier une catégorie" : "Créer une catégorie"}
-          </h1>
-          <Formik
-            initialValues={{
-              labelCategory: categoryToEdit
-                ? categoryToEdit.label_category
-                : "",
-            }}
-            enableReinitialize={true} // Ajoute cette option
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
           >
-            {({ isSubmitting }) => (
-              <Form className="category-form">
-                <div className="form-group">
-                  <label htmlFor="labelCategory" className="label">
-                    Nom de la catégorie
-                  </label>
-                  <Field
-                    type="text"
-                    id="labelCategory"
-                    className="input"
-                    name="labelCategory"
-                    placeholder="Entrez le nom de la catégorie"
-                  />
-                  <ErrorMessage
-                    name="labelCategory"
-                    component="div"
-                    className="error-text"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="submit-btn"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Spinner />
-                  ) : categoryToEdit ? (
-                    "Mettre à jour la catégorie"
-                  ) : (
-                    "Créer la catégorie"
-                  )}
-                </button>
-              </Form>
-            )}
-          </Formik>
-
-          {alertVisible && (
-            <Alert
-              message={alertMessage}
-              type={alertType}
-              visible={alertVisible}
-              onClose={handleAlertClose}
-              onConfirm={handleAlertClose}
-            />
-          )}
+            Précédent
+          </button>
+          <span>{currentPage}</span>
+          <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Suivant
+          </button>
         </div>
+
+        {showAlert && (
+          <Alert
+            message="Êtes-vous sûr de vouloir supprimer cette catégorie ?"
+            type="warning"
+            onClose={() => setShowAlert(false)}
+            onConfirm={confirmDelete}
+            visible={showAlert}
+          />
+        )}
       </div>
-    </Layout>
+
+      <div className="create-category-section">
+        <h1 className="title">
+          {categoryToEdit ? "Modifier une catégorie" : "Créer une catégorie"}
+        </h1>
+        <Formik
+          initialValues={{
+            labelCategory: categoryToEdit ? categoryToEdit.label_category : "",
+          }}
+          enableReinitialize={true} // Ajoute cette option
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="category-form">
+              <div className="form-group">
+                <label htmlFor="labelCategory" className="label">
+                  Nom de la catégorie
+                </label>
+                <Field
+                  type="text"
+                  id="labelCategory"
+                  className="input"
+                  name="labelCategory"
+                  placeholder="Entrez le nom de la catégorie"
+                />
+                <ErrorMessage
+                  name="labelCategory"
+                  component="div"
+                  className="error-text"
+                />
+              </div>
+              <button
+                type="submit"
+                className="submit-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Spinner />
+                ) : categoryToEdit ? (
+                  "Mettre à jour la catégorie"
+                ) : (
+                  "Créer la catégorie"
+                )}
+              </button>
+            </Form>
+          )}
+        </Formik>
+
+        {alertVisible && (
+          <Alert
+            message={alertMessage}
+            type={alertType}
+            visible={alertVisible}
+            onClose={handleAlertClose}
+            onConfirm={handleAlertClose}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

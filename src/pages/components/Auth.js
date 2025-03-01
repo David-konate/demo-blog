@@ -11,12 +11,6 @@ const Auth = () => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // État pour la modale
   const { login, isLoggedIn } = useAuth();
 
-  // useEffect(() => {
-  //   if (isLoggedIn()) {
-  //     navigate(`/`);
-  //   }
-  // }, [isLoggedIn]); // Ajout de la dépendance pour éviter les effets indésirables
-
   return (
     <section className="login-container">
       <div className="login-box">

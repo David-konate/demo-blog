@@ -12,7 +12,7 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
-  padding: 80px;
+  padding: 40px;
 }
 
 @media (max-width: 767px) {

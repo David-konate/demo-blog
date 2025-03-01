@@ -4,194 +4,172 @@ import { navigate } from "gatsby";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-// Vérifier si l'on est dans le navigateur
+const TOKEN_KEY = "auth_token";
 const isBrowser = () => typeof window !== "undefined";
 
-// Récupérer l'utilisateur stocké en localStorage
-export const getUser = () =>
-  isBrowser() && window.localStorage.getItem("gatsbyUser")
-    ? JSON.parse(window.localStorage.getItem("gatsbyUser"))
-    : null;
+const getUserFromStorage = () => {
+  if (isBrowser()) {
+    const user = window.localStorage.getItem("gatsbyUser");
+    return user ? JSON.parse(user) : null;
+  }
+  return null;
+};
 
-// Stocker l'utilisateur de manière sécurisée
-const setUser = (user) => {
+const setUserToStorage = (user) => {
   if (isBrowser()) {
     window.localStorage.setItem("gatsbyUser", JSON.stringify(user));
   }
 };
 
-// Supprimer les informations utilisateur lors de la déconnexion
 const clearAuth = () => {
   if (isBrowser()) {
     window.localStorage.removeItem("gatsbyUser");
-    Cookies.remove("token");
+    Cookies.remove(TOKEN_KEY);
   }
 };
 
-// Hook d'authentification sécurisé
 const useAuth = () => {
-  const [user, setUserState] = useState(getUser());
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [state, setState] = useState({
+    user: getUserFromStorage(),
+    loading: false,
+    error: null,
+    userCount: 0,
+  });
 
-  // Fonction pour s'enregistrer
-  const register = async (email, password, name, role = "user") => {
-    setLoading(true);
-    setError(null);
+  const setUser = (user) => {
+    setUserToStorage(user);
+    setState((prev) => ({ ...prev, user }));
+  };
+
+  const handleRequest = async (requestFn, onSuccess) => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const response = await trackerApi.post(
-        "/auth/register",
-        email,
-        password,
-        name,
-        role
+      const response = await requestFn();
+      console.log("Réponse API:", response.data);
+      onSuccess(response.data);
+    } catch (error) {
+      console.error("Erreur API:", error.response?.data || error.message);
+      setState((prev) => ({
+        ...prev,
+        error: error.response?.data?.message || "Erreur serveur",
+      }));
+    } finally {
+      setState((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  const register = (email, password, confirmPassword, name, role = "user") => {
+    handleRequest(
+      () =>
+        trackerApi.post("/auth/register", {
+          email,
+          password,
+          confirmPassword,
+          name,
+          role,
+        }),
+      ({ user, token }) => {
+        Cookies.set(TOKEN_KEY, token, { expires: 7 });
+        setUser(user);
+        navigate("/");
+      }
+    );
+  };
+
+  const login = (email, password) => {
+    handleRequest(
+      () => trackerApi.post("/auth/login", email, password),
+      ({ user, token }) => {
+        Cookies.set(TOKEN_KEY, token, { expires: 7 });
+        setUser(user);
+        navigate("/app/admin");
+      }
+    );
+  };
+
+  const loginWithGoogle = async (response) => {
+    const googleToken = response.credential;
+    console.log("Token Google reçu:", googleToken);
+
+    try {
+      const { name, email, sub: googleId } = jwtDecode(googleToken);
+      console.log("Décodage du token Google:", { name, email, googleId });
+
+      const res = await trackerApi.post(
+        "/auth/google",
+        { name, email, googleId },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
 
-      const { user, token } = response.data;
-      Cookies.set("token", token, { expires: 7 });
-      setUser(user);
-      setUserState(user);
-
-      navigate("/");
-    } catch (error) {
-      setError(error.response?.data?.message || "Erreur serveur");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fonction pour se connecter
-  const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await trackerApi.post("/auth/login", email, password);
-
-      const { user, token } = response.data;
-      Cookies.set("token", token, { expires: 7 });
-      setUser(user);
-      setUserState(user);
-
-      navigate("/");
-    } catch (error) {
-      setError(error.response?.data?.message || "Erreur serveur");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Vérification de l'authentification et rafraîchissement du token si nécessaire
-  const checkAuth = async () => {
-    setLoading(true);
-    try {
-      const response = await trackerApi.get("/auth/me", {
-        withCredentials: true,
-      });
-
-      setUser(response.data.user);
-      setUserState(response.data.user);
-    } catch (error) {
-      clearAuth();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Connexion avec Google
-  const loginWithGoogle = async (response) => {
-    setLoading(true);
-    setError(null);
-    console.log(response);
-
-    const googleId = response.clientId; // Il semble que clientId n'est pas directement dans response. À confirmer.
-    const googleToken = response.credential;
-    const decodedToken = jwtDecode(googleToken);
-    console.log({ decodedToken });
-
-    const name = decodedToken.name;
-    const email = decodedToken.email;
-
-    try {
-      // Envoie les informations d'identification à l'API
-      const res = await trackerApi.post("/auth/google", {
-        googleId, // Utilise googleId récupéré
-        googleToken,
-        name, // Nom de l'utilisateur
-        email, // Email de l'utilisateur
-      });
-      console.log(res.data);
       const { user, token } = res.data;
+      console.log("Connexion Google réussie:", user);
 
-      // Sauvegarde le token dans les cookies
-      Cookies.set("token", token, { expires: 7 });
-
-      // Met à jour l'état de l'utilisateur
+      Cookies.set(TOKEN_KEY, token, { expires: 7 });
       setUser(user);
-      setUserState(user);
-
-      // Redirige vers le tableau de bord
-      navigate("/");
+      navigate("/app/admin");
     } catch (error) {
-      setError(error.response?.data?.message || "Erreur serveur");
-    } finally {
-      setLoading(false);
+      console.error("Échec de la connexion Google:", error);
+      setState((prev) => ({
+        ...prev,
+        error: "Échec de la connexion avec Google",
+      }));
     }
   };
 
-  // Connexion avec Facebook
-  const loginWithFacebook = async (code) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await trackerApi.post("/auth/facebook/callback", {
-        code,
+  const checkAuth = () => {
+    const token = Cookies.get(TOKEN_KEY);
+    if (!token) {
+      console.warn("Aucun token trouvé, utilisateur non connecté.");
+      return;
+    }
+
+    handleRequest(
+      () => trackerApi.get("/auth/me", { withCredentials: true }),
+      ({ user }) => setUser(user)
+    );
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const logout = () => {
+    handleRequest(
+      () => trackerApi.post("/auth/logout", {}, { withCredentials: true }),
+      () => {
+        clearAuth();
+        setUser(null);
+        navigate("/login");
+      }
+    );
+  };
+
+  const getUserCount = () => {
+    trackerApi
+      .get("/count-users")
+      .then((response) =>
+        setState((prev) => ({ ...prev, userCount: response.data.userCount }))
+      )
+      .catch((err) => {
+        setState((prev) => ({
+          ...prev,
+          error: "Erreur lors du chargement des données",
+        }));
+        console.error(err);
       });
-
-      const { user, token } = response.data;
-      Cookies.set("token", token, { expires: 7 });
-      setUser(user);
-      setUserState(user);
-
-      navigate("/dashboard");
-    } catch (error) {
-      setError(error.response?.data?.message || "Erreur serveur");
-    } finally {
-      setLoading(false);
-    }
   };
-
-  // Déconnexion sécurisée
-  const logout = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await trackerApi.post("/auth/logout", {}, { withCredentials: true });
-
-      clearAuth();
-      setUserState(null);
-
-      navigate("/login");
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Vérifie si l'utilisateur est connecté
-  const isLoggedIn = () => !!user;
 
   return {
-    user,
-    loading,
-    error,
+    ...state,
     register,
     login,
     loginWithGoogle,
-    loginWithFacebook,
     checkAuth,
     logout,
-    isLoggedIn,
+    getUserCount,
+    isLoggedIn: () => !!state.user,
   };
 };
 

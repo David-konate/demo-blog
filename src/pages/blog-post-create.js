@@ -7,17 +7,15 @@ import Layout from "./components/layout";
 
 const CreateArticlePage = () => {
   return (
-    <Layout>
-      <div className="blog-editor-preview-container">
-        <div className="blog-editor">
-          <CreatePost />
-        </div>
-        <div className="blog-preview">
-          <BlogPreview />
-          <ArticlePreview />
-        </div>
+    <div className="blog-editor-preview-container">
+      <div className="blog-editor">
+        <CreatePost />
       </div>
-    </Layout>
+      <div className="blog-preview">
+        <BlogPreview />
+        <ArticlePreview />
+      </div>
+    </div>
   );
 };
 

@@ -1,0 +1,91 @@
+
+.sidebar-container {
+margin-top: 40PX;
+}
+
+
+@media (max-width: 1024px) {
+  .sidebar-container {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    transform: translateX(-100%);
+  }
+  .sidebar-container.open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-container {
+    margin-top: 0;
+  }
+}
+
+.slide-container {
+  z-index: 10;
+}
+
+.menu-label {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 18px;
+  color: white; /* Texte en blanc */
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-list li {
+  margin-bottom: 12px;
+}
+.menu-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.menu-link:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+.menu-link:active {
+  color: var(--secondary-color);
+  transform: scale(0.95);
+}
+
+
+
+
+.logout {
+  color: var(--primary-color);
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.logout:hover {
+  color: red; /* Rouge vif pour l'effet de survol */
+  text-shadow: 0 0 10px red, 0 0 20px red; /* Effet de néon sur le texte */
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    transform: translateX(-100%);
+  }
+  .sidebar-container.open {
+    transform: translateX(0);
+  }
+}

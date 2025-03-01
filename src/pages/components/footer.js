@@ -25,37 +25,30 @@ const Footer = () => {
           <a
             className="social-icon"
             href="https://www.david-konate.fr"
-            title="Mon site web"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaExternalLinkAlt size={20} />
           </a>
-
           <a
             className="social-icon"
             href="https://github.com/David-konate"
-            title="Mon GitHub"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaGithub size={20} />
           </a>
-
           <a
             className="social-icon"
             href="https://www.linkedin.com/in/david-konate/"
-            title="Mon LinkedIn"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaLinkedin size={20} />
           </a>
-
           <a
             className="social-icon"
             href="https://ballnconnect.com/"
-            title="Projet déployé"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -63,6 +56,8 @@ const Footer = () => {
           </a>
         </div>
       </div>
+
+      {/* Déplace le copyright en dehors de .footer-content */}
       <p className="copyright">
         © {new Date().getFullYear()} David Konaté. Tous droits réservés.
       </p>

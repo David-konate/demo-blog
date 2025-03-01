@@ -5,6 +5,7 @@ import { navigate } from "@reach/router";
 const useArticles = () => {
   const [categoriesCount, setCategoriesCount] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [articleCount, setArticleCount] = useState(0);
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -369,25 +370,43 @@ const useArticles = () => {
     }
   };
 
+  const articlesCount = () => {
+    trackerApi
+      .get("/articles/count") // Change l'URL en fonction de ton serveur
+      .then((response) => {
+        console.log(response);
+        setArticleCount(response.data.count); // Stocker le nombre d'articles
+      })
+      .catch((err) => {
+        setError("Erreur lors du chargement des données"); // Gérer l'erreur
+        console.error(err);
+      });
+  };
+
   return {
     articles, // Liste des articles récupérés
     article, // Article spécifique actuellement sélectionné
     loading, // Indicateur de chargement pour les articles
     error, // Erreur si quelque chose ne va pas lors de la récupération des articles
     markdown, // Contenu markdown de l'article sélectionné
+    articleCount,
+    articlePreview,
+    loading,
+    categoriesCount,
+    articleCount,
+    setArticleCount,
+    articlesCount,
+    articleCount,
     setMarkdown,
     fetchArticleById, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
     checkOrGenerateSlug, // Fonction pour vérifier ou générer un slug unique
-    articlePreview,
     setArticlePreview,
     fetchArticles,
     deleteArticle,
     updateArticle,
-    categoriesCount,
     getArticleCountByCategory,
-    loading,
   };
 };
 

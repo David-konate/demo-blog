@@ -17,6 +17,8 @@ export const ArticleProvider = ({ children }) => {
     checkOrGenerateSlug, // Fonction pour vérifier ou générer un slug unique
     generateMarkdown,
     articlePreview,
+    articleCount,
+    setArticleCount,
     setArticlePreview,
     fetchArticles,
     deleteArticle,
@@ -37,6 +39,8 @@ export const ArticleProvider = ({ children }) => {
         fetchArticleBySlug,
         saveArticle,
         saveImages,
+        articleCount,
+        setArticleCount,
         checkOrGenerateSlug,
         generateMarkdown,
         articlePreview,

@@ -1,0 +1,149 @@
+/* Conteneur principal */
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    background: var(--background-color); /* Arrière-plan pour l'ensemble de la page */
+  }
+  
+  /* Titre et sous-titre */
+  .admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-color);
+  }
+  
+  .admin-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-color);
+    margin-bottom: 10px;
+  }
+  
+  .admin-header h2 {
+    font-size: 18px;
+    color: var(--secondary-color);
+    font-weight: 400;
+  }
+  
+  /* Carte des statistiques (disposition flex) */
+  .admin-statistics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Style des articles dans les cartes de statistiques */
+  .admin-statistics article {
+    background: var(--modal-background);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex: 1 1 calc(33.333% - 20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .admin-statistics article:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Titres et sous-titres des cartes */
+  .admin-statistics article .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+  
+  .admin-statistics article .subtitle {
+    font-size: 16px;
+    color: var(--secondary-color);
+  }
+  
+  /* Cartes de statistiques */
+  .stat-card {
+    background: var(--background-color);
+    border-radius: 12px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .stat-card .icon {
+    color: var(--primary-color);
+    font-size: 48px;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+  }
+  
+  .stat-card .icon:hover {
+    color: var(--primary-hover-color); /* Pour un effet au survol */
+  }
+  
+  .stat-card .title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+  
+  .stat-card .subtitle {
+    font-size: 16px;
+    color: var(--secondary-color);
+  }
+  
+  /* Responsivité pour les écrans mobiles */
+  @media (max-width: 768px) {
+    .admin-statistics article {
+      flex: 1 1 100%; /* Chaque article prend 100% de l'espace sur les petits écrans */
+    }
+  }
+  
+  /* Style général pour les icônes */
+  .admin-icon {
+    color: var(--secondary-color); /* Utilise la couleur secondaire définie dans tes variables CSS */
+    transition: color 0.3s ease;
+  }
+  
+  .admin-icon:hover {
+    color: var(--primary-color); /* Changer la couleur au survol */
+  }
+  
+  /* Animation des transitions */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Appliquer l'animation */
+  .admin-container,
+  .admin-header,
+  .admin-statistics article {
+    animation: fadeIn 0.5s ease-out;
+  }
+  

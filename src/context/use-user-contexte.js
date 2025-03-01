@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import useAuth from "../services/authService";
 
 const AuthContext = createContext();
@@ -6,14 +6,13 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const {
     user,
-    token,
     loading,
     error,
-    alert,
+    userCount,
+    getUserCount,
     register,
     login,
     loginWithGoogle,
-    loginWithFacebook,
     checkAuth,
     logout,
     isLoggedIn,
@@ -23,14 +22,13 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        token,
         loading,
         error,
-        alert,
+        userCount,
+        getUserCount,
         register,
         login,
         loginWithGoogle,
-        loginWithFacebook,
         checkAuth,
         logout,
         isLoggedIn,
