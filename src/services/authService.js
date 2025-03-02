@@ -60,14 +60,7 @@ const useAuth = () => {
 
   const register = (email, password, confirmPassword, name, role = "user") => {
     handleRequest(
-      () =>
-        trackerApi.post("/auth/register", {
-          email,
-          password,
-          confirmPassword,
-          name,
-          role,
-        }),
+      () => trackerApi.post("/auth/register", email, password, name, role),
       ({ user, token }) => {
         Cookies.set(TOKEN_KEY, token, { expires: 7 });
         setUser(user);

@@ -40,47 +40,9 @@
   transform: rotate(90deg);
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
 
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
-  position: relative;
-  padding: 5px 10px;
-  transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 4px;
-}
 
-.nav-link::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease-in-out;
-  border-radius: 4px;
-}
 
-.nav-link:hover {
-  color: var(--primary-color);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.nav-link:hover::before {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-}
 
 /* Sidebar */
 /* Sidebar */

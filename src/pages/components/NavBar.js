@@ -25,14 +25,14 @@ const Navbar = () => {
           {isOpen ? <FaTimes size={30} /> : <FaBars size={30} />}
         </div>
         <div className={`nav-links ${isOpen ? "open" : ""}`}>
-          <Link to="/" className="nav-link">
+          <Link to="/" className="nav-link" activeClassName="active">
             Accueil
           </Link>
-          <Link to="/blog-list" className="nav-link">
+          <Link to="/blog-list" className="nav-link" activeClassName="active">
             Articles
           </Link>
-          <Link to="/app/admin" className="nav-link">
-            admin
+          <Link to="/app/admin" className="nav-link" activeClassName="active">
+            Admin
           </Link>
 
           <div className="social-icons">

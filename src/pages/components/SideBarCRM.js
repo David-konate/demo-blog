@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, navigate } from "gatsby";
 import "../../styles/layout-admin.css";
-import { isLoggedIn, logout } from "../../services/authService";
+import useAuth from "../../services/authService";
 
 const SideBar = () => {
+  const { logout } = useAuth();
   return (
     <aside className="sidebar">
       <nav className="menu">
@@ -65,7 +66,7 @@ const SideBar = () => {
               to="/"
               onClick={(event) => {
                 event.preventDefault();
-                logout(() => navigate(`/app/login`));
+                logout(() => logout());
               }}
             >
               Déconnexion

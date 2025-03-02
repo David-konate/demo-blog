@@ -104,18 +104,18 @@ body {
 ::-webkit-scrollbar-thumb-horizontal:hover {
   background-color: var(--secondary-color);
 }
-
-
 /* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--gradient-bg);
-  padding: 15px 40px;
+  padding: 0px 40px;
   color: white;
   box-shadow: 0 4px 10px var(--box-shadow-color);
   transition: all 0.3s ease-in-out;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .logo {
@@ -125,6 +125,8 @@ body {
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 2px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .menu-icon {
@@ -142,52 +144,77 @@ body {
   display: flex;
   align-items: center;
   gap: 25px;
-  padding: 5px;
+  height: 100%; /* Prend toute la hauteur de la navbar */
+  position: relative;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  height: 100%;
+  position: relative;
+}
+
+/* Barre animée */
+.nav-links::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 5px; /* Épaisseur de la barre */
+  background: var(--primary-color);
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  border-radius: 5px;
+}
+
+/* Style des liens */
 .nav-link {
   color: white;
   text-decoration: none;
   font-weight: 500;
   font-size: 16px;
   position: relative;
-  display: inline-block;
-  transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Transition fluide pour la couleur, le décalage et l'ombre */
-  padding: 5px;
-}
-
-.nav-link::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  padding: 15px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
   height: 100%;
-  background: rgba(0, 0, 0, 0.2);  /* Arrière-plan semi-transparent */
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease-in-out;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-link:hover {
-  color: var(--primary-color);  /* Change la couleur au survol */
-  transform: translateY(-3px);  /* Décalage léger vers le haut pour l'effet de flottement */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);  /* Ombre subtile pour l'effet de profondeur */
+  color: var(--primary-color);
+  transform: scale(1.1);
 }
 
-.nav-link:hover::before {
-  transform: scaleX(1);  /* L'arrière-plan semi-transparent devient visible */
-  transform-origin: bottom left;  /* L'animation de l'arrière-plan se fait de bas en haut */
+/* Effet actif */
+.nav-link.active {
+  font-weight: bold;
+  transform: scale(1.1);
 }
+
+/* Déplacement fluide de la barre */
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 100%;
+  height: 5px;
+  background: var(--primary-color);
+  border-radius: 5px;
+  transform: translateX(-50%);
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+
 
 /* Responsive */
 @media screen and (max-width: 768px) {
   .navbar {
     padding: 10px 20px;
     background: var(--primary-color);
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
   }
 
   .menu-icon {
@@ -198,23 +225,21 @@ body {
     display: none;
     position: absolute;
     top: 70px;
-    left: 50%; /* Positionnement au centre */
-    transform: translateX(-50%); /* Centrage */
-    width: 40%; /* Largeur de 40% */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
     background: var(--primary-color);
     flex-direction: column;
     gap: 15px;
     text-align: center;
     padding: 10px 0;
-    border-radius: 10px; /* Ajout d'un arrondi optionnel */
+    border-radius: 10px;
   }
 
-  .nav-links.open,
-  .nav-links.active {
+  .nav-links.open {
     display: flex;
   }
 }
-
 
 .contact-btn {
   font-size: 16px;
