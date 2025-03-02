@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./navBar";
 import Footer from "./Footer";
 import "../../styles/global.css"; // Assure-toi d'inclure tes styles globaux
 import SideBar from "./SideBarCRM";
+import NavbarAdmin from "./NavBarAdmin";
 
 export function useMedia(query) {
   const [matches, setMatches] = useState(
@@ -30,7 +30,7 @@ const LayoutAdmin = ({ children }) => {
 
   return (
     <div className="page-container">
-      {!isPhone && <Navbar />} {/* Hide Navbar on mobile */}
+      {!isPhone && <NavbarAdmin />} {/* Hide Navbar on mobile */}
       {isPhone && (
         <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
           ☰ {/* Icon for menu */}

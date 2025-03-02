@@ -16,19 +16,6 @@ export const CategoryProvider = ({ children }) => {
     fetchCategoryById, // Fonction pour récupérer une catégorie spécifique
   } = useCategories();
 
-  //   // Vérification que les fonctions et les données sont bien chargées avant de rendre les enfants
-  //   const [isReady, setIsReady] = useState(false);
-
-  //   useEffect(() => {
-  //     if (fetchCategories && categories !== undefined) {
-  //       setIsReady(true); // Tout est prêt, on peut passer à l'affichage des enfants
-  //     }
-  //   }, [fetchCategories, categories]);
-
-  //   if (!isReady) {
-  //     return <div>Loading...</div>; // Affichage d'un message de chargement jusqu'à ce que le contexte soit prêt
-  //   }
-
   return (
     <CategoryContext.Provider
       value={{

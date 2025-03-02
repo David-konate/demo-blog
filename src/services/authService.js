@@ -162,6 +162,7 @@ const useAuth = () => {
     checkAuth,
     logout,
     getUserCount,
+    getUserFromStorage,
     isLoggedIn: () => !!state.user,
   };
 };
