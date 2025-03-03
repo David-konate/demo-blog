@@ -37,8 +37,10 @@ const useAuth = () => {
   });
 
   const setUser = (user) => {
-    setUserToStorage(user);
-    setState((prev) => ({ ...prev, user }));
+    if (user) {
+      setUserToStorage(user);
+      setState((prev) => ({ ...prev, user }));
+    }
   };
 
   const handleRequest = async (requestFn, onSuccess) => {
@@ -58,9 +60,14 @@ const useAuth = () => {
     }
   };
 
-  const register = (email, password, confirmPassword, name, role = "user") => {
+  const register = (email, password, name, role = "user") => {
     handleRequest(
-      () => trackerApi.post("/auth/register", email, password, name, role),
+      () =>
+        trackerApi.post(
+          "/auth/register",
+          { email, password, name, role },
+          { withCredentials: true }
+        ),
       ({ user, token }) => {
         Cookies.set(TOKEN_KEY, token, { expires: 7 });
         setUser(user);
@@ -71,7 +78,12 @@ const useAuth = () => {
 
   const login = (email, password) => {
     handleRequest(
-      () => trackerApi.post("/auth/login", email, password),
+      () =>
+        trackerApi.post(
+          "/auth/login",
+          { email, password },
+          { withCredentials: true }
+        ),
       ({ user, token }) => {
         Cookies.set(TOKEN_KEY, token, { expires: 7 });
         setUser(user);
@@ -93,6 +105,7 @@ const useAuth = () => {
         { name, email, googleId },
         {
           headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
 
@@ -101,7 +114,7 @@ const useAuth = () => {
 
       Cookies.set(TOKEN_KEY, token, { expires: 7 });
       setUser(user);
-      navigate("/app/admin");
+      navigate("/");
     } catch (error) {
       console.error("Échec de la connexion Google:", error);
       setState((prev) => ({
@@ -119,8 +132,15 @@ const useAuth = () => {
     }
 
     handleRequest(
-      () => trackerApi.get("/auth/me", { withCredentials: true }),
-      ({ user }) => setUser(user)
+      () =>
+        trackerApi.get("/auth/me", {
+          withCredentials: true,
+        }),
+      ({ user }) => {
+        if (user) {
+          setUser(user);
+        }
+      }
     );
   };
 
