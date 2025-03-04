@@ -13,11 +13,12 @@ const Admin = () => {
   const { loading, user, userCount, getUserCount, checkAuth } = useAuth();
   const { users } = useUsers();
   const { articlesCount, getTotalArticlesByUser } = useArticles();
-  const { getUnreadMessages, messages } = useMessages();
+  const { getUnreadMessages, messages, getUnreadMessageCount, countMessage } =
+    useMessages();
 
   const [showCookieModal, setShowCookieModal] = useState(false);
 
-  console.log(user);
+  console.log(countMessage);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +26,7 @@ const Admin = () => {
         getUserCount();
         articlesCount();
         getUnreadMessages();
+        getUnreadMessageCount();
       }
     };
     fetchData();
@@ -79,8 +81,8 @@ const Admin = () => {
 
         <article onClick={() => navigate("/app/messages")}>
           <FaEnvelope size={48} className="admin-icon" />
-          <p className="title">{messages?.length ?? 0}</p>
-          <p className="subtitle">Nouveau(x) Messages</p>
+          <p className="title">{countMessage ?? 0}</p>
+          <p className="subtitle">Non lu(s)</p>
         </article>
 
         {user?.role === "admin" && (

@@ -4,6 +4,7 @@ import socket from "../services/socketService"; // Importation du WebSocket
 
 const useMessages = () => {
   const [messages, setMessages] = useState([]);
+  const [countMessage, setCountMessage] = useState(0);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -130,19 +131,6 @@ const useMessages = () => {
     }
   };
 
-  // 🔹 Filtrer les messages
-  const getFilteredMessages = async (filters) => {
-    setLoading(true);
-    try {
-      const response = await trackerApi.get("/messages", { params: filters });
-      setMessages(response.data.messages);
-    } catch (error) {
-      setError(error.response ? error.response.data.message : "Erreur serveur");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // 🔹 Mettre à jour le statut d’un message
   const updateMessageStatus = async (messageId, status) => {
     setLoading(true);
@@ -182,11 +170,30 @@ const useMessages = () => {
     };
   }, []);
 
+  // 🔹 Fonction pour récupérer le nombre de messages non lus
+  const getUnreadMessageCount = async (userId = null) => {
+    console.log("getcout");
+    try {
+      const response = await trackerApi.get("/messages/unreadCount", {
+        params: userId ? { userId } : {},
+      });
+      console.log(response.data.unreadCount);
+      setCountMessage(response.data.unreadCount);
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération du nombre de messages non lus :",
+        error
+      );
+      return 0; // Retourne 0 en cas d'erreur pour éviter de planter l'affichage
+    }
+  };
+
   return {
     messages,
     message,
     loading,
     error,
+    countMessage,
     sendMessage,
     getUnreadMessages,
     markMessageAsRead,
@@ -194,8 +201,9 @@ const useMessages = () => {
     getMessagesByUserId,
     getMessages,
     deleteMessage,
-    getFilteredMessages,
+
     updateMessageStatus,
+    getUnreadMessageCount,
   };
 };
 

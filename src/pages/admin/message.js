@@ -13,7 +13,6 @@ const AdminMessagesPage = () => {
     loading: messagesLoading,
     getMessages,
     deleteMessage,
-    getFilteredMessages,
     getMessagesByUserId,
     updateMessageStatus,
   } = useMessages();
@@ -36,7 +35,7 @@ const AdminMessagesPage = () => {
 
   useEffect(() => {
     if (!authLoading && user.role !== "admin") {
-      getMessagesByUserId(user.id);
+      getMessages({ userId: Number(user.id) }); // 🔹 Assurer un nombre
     } else if (user?.role === "admin") {
       getMessages();
     }
@@ -45,9 +44,9 @@ const AdminMessagesPage = () => {
   useEffect(() => {
     // On applique le filtre sur le statut et les autres critères
     if (filter.status) {
-      getFilteredMessages(filter);
+      getMessages(filter);
     }
-  }, [filter, getFilteredMessages]);
+  }, [filter, getMessages]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

@@ -6,7 +6,6 @@ import AtomSpinner from "../pages/components/Spinner";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { user, loading, isLoggedIn } = useAuth();
-  console.log(user);
   if (loading) {
     return (
       <p>
