@@ -383,6 +383,23 @@ const useArticles = () => {
       });
   };
 
+  const getTotalArticlesByUser = async (userId) => {
+    try {
+      const response = await trackerApi.get("/articles/count-by-user", {
+        params: { userId },
+      });
+
+      if (response.status === 200) {
+        return response.data; // Retourne le nombre d'articles
+      } else {
+        throw new Error("Erreur lors de la récupération du nombre d'articles");
+      }
+    } catch (error) {
+      console.error("Erreur API:", error);
+      throw error;
+    }
+  };
+
   return {
     articles, // Liste des articles récupérés
     article, // Article spécifique actuellement sélectionné
@@ -397,6 +414,7 @@ const useArticles = () => {
     setArticleCount,
     articlesCount,
     articleCount,
+    getTotalArticlesByUser,
     setMarkdown,
     fetchArticleById, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article

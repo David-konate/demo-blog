@@ -62,6 +62,9 @@ const SideBar = () => {
         <p className="menu-label">Action</p>
         <ul className="menu-list">
           <li>
+            <Link to="/app/admin/params">Paramètres</Link>
+          </li>
+          <li>
             <Link
               to="/"
               onClick={(event) => {

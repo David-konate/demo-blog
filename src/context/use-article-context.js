@@ -15,6 +15,7 @@ export const ArticleProvider = ({ children }) => {
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
     checkOrGenerateSlug, // Fonction pour vérifier ou générer un slug unique
+    getTotalArticlesByUser,
     generateMarkdown,
     articlePreview,
     articleCount,
@@ -42,6 +43,7 @@ export const ArticleProvider = ({ children }) => {
         articleCount,
         setArticleCount,
         checkOrGenerateSlug,
+        getTotalArticlesByUser,
         generateMarkdown,
         articlePreview,
         setArticlePreview,

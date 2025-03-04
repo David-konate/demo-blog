@@ -343,7 +343,7 @@ body {
   border-left: 4px solid #1e40af;
   padding-left: 10px;
   font-style: italic;
-  color: #555;
+  color: var(--text-color);
   margin: 10px 0;
 }
 

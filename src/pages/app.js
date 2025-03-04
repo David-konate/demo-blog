@@ -7,6 +7,8 @@ import Admin from "./admin";
 import LayoutAdmin from "./components/layoutAdmin";
 import Login from "./login";
 import CreateArticlePage from "./blog-post-create";
+import Parametres from "./params";
+import AdminMessagesPage from "./admin/message";
 
 const App = () => {
   return (
@@ -16,6 +18,8 @@ const App = () => {
         <PrivateRoute path="/blog-post-create" component={CreateArticlePage} />
         <PrivateRoute path="/blog-update" component={UpdateArticlePage} />
         <PrivateRoute path="/admin" component={Admin} />
+        <PrivateRoute path="/messages" component={AdminMessagesPage} />
+        <PrivateRoute path="admin/params" component={Parametres} />
         <Login path="/login" />
       </Router>
     </LayoutAdmin>

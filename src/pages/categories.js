@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "../styles/create-category.css";
 import useCategories from "../services/categoryService";
-import Spinner from "../pages/components/Spinner";
-import Alert from "../pages/components/Alert";
+import Spinner from "./components/Spinner";
+import Alert from "./components/Alert";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import Layout from "../pages/components/layout";
+import Layout from "./components/layout";
 
 const CreateCategoryPage = () => {
   const {

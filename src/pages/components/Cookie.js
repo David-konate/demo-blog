@@ -1,99 +1,64 @@
-import React, { useState, useEffect } from "react";
-import useCookies from "../../services/cookieService";
-import useAuth from "../../services/authService"; // Vérification de l'utilisateur
+import React from "react";
 import "../../styles/cookie.css";
 
-const CookiesModal = () => {
-  const { cookie, loading, error, setCookiesPreferences } = useCookies();
-  const { getUserFromStorage } = useAuth();
-  const user = getUserFromStorage(); // Récupération sécurisée de l'utilisateur
-  const [cookiesAccepted, setCookiesAccepted] = useState(false);
-  const [newsletterAccepted, setNewsletterAccepted] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isOpen, setIsOpen] = useState(true); // Gérer l'affichage du modal
-
-  // Effet pour initialiser les préférences de cookies si elles existent
-  useEffect(() => {
-    if (cookie) {
-      setCookiesAccepted(cookie.cookiesAccepted || false);
-      setNewsletterAccepted(cookie.newsletterAccepted || false);
-    }
-  }, [cookie]);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Empêche le rechargement de la page
-
-    try {
-      await setCookiesPreferences(cookiesAccepted, newsletterAccepted);
-      setSuccessMessage("Vos préférences ont été enregistrées !");
-      setTimeout(() => {
-        setSuccessMessage("");
-        setIsOpen(false); // Fermer le modal après enregistrement
-      }, 2000);
-    } catch (err) {
-      console.error("Erreur d'enregistrement des cookies :", err);
-      setSuccessMessage("Une erreur est survenue, veuillez réessayer.");
-    }
-  };
-
-  if (!isOpen) return null; // Ne pas afficher le modal s'il est fermé
-  if (loading) return <div className="cookie-modal-loading">Chargement...</div>;
-  if (error) return <div className="cookie-modal-error">Erreur : {error}</div>;
+const CookiesModal = ({
+  isOpen,
+  onClose,
+  handleAcceptCookies,
+  cookie,
+  loading,
+}) => {
+  if (!isOpen) return null;
 
   return (
-    <div className="cookie-modal-overlay">
-      <div className="cookie-modal-content">
-        <span className="cookie-modal-close" onClick={() => setIsOpen(false)}>
-          ×
-        </span>
-        <h2 className="cookie-modal-title">Préférences de Cookies</h2>
-        <p className="cookie-modal-description">
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>Gestion des Cookies</h2>
+        <p>
           Nous utilisons des cookies pour améliorer votre expérience. Vous
-          pouvez accepter ou refuser les cookies non essentiels. Pour plus
-          d'informations, consultez notre{" "}
-          <a
-            href="/politique-de-confidentialite"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            politique de confidentialité
-          </a>
-          .
+          pouvez gérer vos préférences ici.
         </p>
-        <form className="cookie-modal-form" onSubmit={handleSubmit}>
-          <label className="cookie-modal-label">
-            <input
-              type="checkbox"
-              checked={cookiesAccepted}
-              onChange={() => setCookiesAccepted(!cookiesAccepted)}
-              className="cookie-modal-checkbox"
-            />
-            J'accepte les cookies nécessaires au fonctionnement du site
-          </label>
-          <br />
-          {user && (
-            <label className="cookie-modal-label">
-              <input
-                type="checkbox"
-                checked={newsletterAccepted}
-                onChange={() => setNewsletterAccepted(!newsletterAccepted)}
-                className="cookie-modal-checkbox"
-              />
-              Je souhaite recevoir la newsletter
-            </label>
+        <div className="cookie-options">
+          {!loading && (
+            <p>
+              Préférences actuelles:{" "}
+              {cookie?.cookiesAccepted ? "✅ Acceptés" : "❌ Refusés"},
+              Newsletter:{" "}
+              {cookie?.newsletterAccepted ? "✅ Abonné" : "❌ Non abonné"}
+            </p>
           )}
-          <br />
-          <button type="submit" className="cookie-modal-submit-btn">
-            Enregistrer mes préférences
+          <button
+            className="params-cookie-btn"
+            onClick={() =>
+              handleAcceptCookies(true, cookie?.newsletterAccepted)
+            }
+          >
+            Accepter les cookies 🍪
           </button>
-        </form>
-        {successMessage && (
-          <p className="cookie-modal-success">{successMessage}</p>
-        )}
-        <p className="cookie-modal-note">
-          Vous pouvez modifier vos préférences à tout moment dans les paramètres
-          de votre compte.
-        </p>
+          <button
+            className="params-cookie-btn"
+            onClick={() =>
+              handleAcceptCookies(false, cookie?.newsletterAccepted)
+            }
+          >
+            Refuser les cookies ❌
+          </button>
+          <button
+            className="params-cookie-btn"
+            onClick={() => handleAcceptCookies(cookie?.cookiesAccepted, true)}
+          >
+            S'abonner à la newsletter 📩
+          </button>
+          <button
+            className="params-cookie-btn"
+            onClick={() => handleAcceptCookies(cookie?.cookiesAccepted, false)}
+          >
+            Se désabonner de la newsletter 📭
+          </button>
+        </div>
+        <button className="modal-close-btn" onClick={onClose}>
+          X
+        </button>
       </div>
     </div>
   );

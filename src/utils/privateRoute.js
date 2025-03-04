@@ -14,7 +14,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       </p>
     ); // Affichage d'un écran de chargement
   }
-
+  console.log(isLoggedIn());
   if (!isLoggedIn()) {
     navigate("/login");
     return null;

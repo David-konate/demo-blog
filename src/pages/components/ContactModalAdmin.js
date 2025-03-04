@@ -4,9 +4,11 @@ import * as Yup from "yup";
 import { FaPhone } from "react-icons/fa";
 import "../../styles/contact.css";
 import useAuth from "../../services/authService";
+import useMessage from "../../services/messageService";
 
 const ContactModalAdmin = ({ onClose }) => {
   const { getUserFromStorage } = useAuth();
+  const { sendMessage } = useMessage();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -26,42 +28,35 @@ const ContactModalAdmin = ({ onClose }) => {
 
   // Schéma de validation avec Yup
   const validationSchema = Yup.object({
-    subject: Yup.string().required("L'objet est requis"),
-    message: Yup.string()
+    title: Yup.string().required("L'objet est requis"),
+    content: Yup.string()
       .required("Le message est requis")
       .min(10, "Le message doit contenir au moins 10 caractères"),
   });
 
   // Gestion de la soumission du formulaire
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     if (!user || !user.id) {
       console.error("Utilisateur non authentifié !");
       return;
     }
 
-    const formData = {
-      ...values,
-      userId: user.id, // Ajout de l'ID utilisateur
-    };
+    try {
+      // S'assurer que content est une chaîne
+      const formattedValues = {
+        title: values.title,
+        content: String(values.content), // Forcer le message à être une chaîne
+      };
 
-    console.log("Données soumises :", formData);
+      await sendMessage(user.id, formattedValues);
+      console.log("Message envoyé avec succès :", formattedValues);
 
-    // Ici, tu peux envoyer `formData` à ton API
-    // Exemple avec fetch :
-    /*
-    fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(response => response.json())
-      .then(data => console.log("Réponse API:", data))
-      .catch(error => console.error("Erreur d'envoi :", error));
-    */
-
-    resetForm(); // Réinitialise le formulaire après l'envoi
+      resetForm(); // Réinitialise le formulaire après l'envoi
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message :", error);
+    } finally {
+      setSubmitting(false); // Désactive l'état de soumission
+    }
   };
 
   return (
@@ -89,27 +84,27 @@ const ContactModalAdmin = ({ onClose }) => {
 
         {/* Formulaire avec Formik */}
         <Formik
-          initialValues={{ subject: "", message: "" }}
+          initialValues={{ title: "", content: "" }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
             <Form className="contact-form">
               <div className="form-group">
-                <label htmlFor="subject">Objet</label>
-                <Field type="text" id="subject" name="subject" />
+                <label htmlFor="title">Objet</label>
+                <Field type="text" id="title" name="title" />
                 <ErrorMessage
-                  name="subject"
+                  name="title"
                   component="p"
                   className="error-text"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="message">Message</label>
-                <Field as="textarea" id="message" name="message" rows="4" />
+                <label htmlFor="content">Message</label>
+                <Field as="textarea" id="content" name="content" rows="4" />
                 <ErrorMessage
-                  name="message"
+                  name="content"
                   component="p"
                   className="error-text"
                 />

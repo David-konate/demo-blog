@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import trackerApi from "../api/tracker";
 import useAuth from "./authService";
+import Cookies from "js-cookie";
 
-const LOCAL_STORAGE_KEY = "cookies_preferences";
+const TOKEN_KEY =
+  "6e025402321a87b4e9f4729421059d34a0a40bda09a63c2ef6c84968f4f1b36bc471188416a4831e12f7b6f4738a13c6243ae6c2b3033ee25c6c85d74b351b2a";
+const COOKIE_PREFERENCES_KEY = "auth_token";
 
 const useCookies = () => {
   const [cookie, setCookie] = useState(null);
@@ -13,53 +16,78 @@ const useCookies = () => {
 
   useEffect(() => {
     const getCookiesPreferences = async () => {
+      console.log("[useCookies] Début de récupération des cookies");
+      setLoading(true);
       try {
-        if (user && user.id) {
-          // Récupération depuis l'API pour un utilisateur connecté
+        if (user?.id) {
+          console.log(
+            "[useCookies] Utilisateur connecté, récupération via API"
+          );
           const response = await trackerApi.get(`/cookies/${user.id}`);
           setCookie(response.data.cookie);
+          Cookies.set(
+            COOKIE_PREFERENCES_KEY,
+            JSON.stringify(response.data.cookie),
+            { expires: 7 }
+          );
         } else {
-          // Récupération depuis localStorage pour un visiteur
-          const localPreferences = localStorage.getItem(LOCAL_STORAGE_KEY);
-          setCookie(localPreferences ? JSON.parse(localPreferences) : {});
+          console.log(
+            "[useCookies] Utilisateur non connecté, récupération via cookies"
+          );
+          const storedCookies = Cookies.get(COOKIE_PREFERENCES_KEY);
+          setCookie(storedCookies ? JSON.parse(storedCookies) : {});
         }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          console.warn(
-            "Préférences de cookies non trouvées, affichage du modal."
-          );
-          setCookie(null); // Déclenche l'affichage du modal
-        } else {
-          setError(
-            error.response ? error.response.data.message : "Erreur du serveur"
-          );
-        }
+        console.error(
+          "[useCookies] Erreur lors de la récupération des cookies:",
+          error
+        );
+        setError(
+          error.response ? error.response.data.message : "Erreur du serveur"
+        );
       } finally {
         setLoading(false);
       }
     };
 
     getCookiesPreferences();
-  }, [user]);
+  }, []);
 
   const setCookiesPreferences = async (cookiesAccepted, newsletterAccepted) => {
+    console.log("[useCookies] Enregistrement des préférences:", {
+      cookiesAccepted,
+      newsletterAccepted,
+    });
     setLoading(true);
     try {
       const newPreferences = { cookiesAccepted, newsletterAccepted };
 
-      if (user && user.id) {
-        // Enregistrement via l'API
+      if (user?.id) {
+        console.log("[useCookies] Utilisateur connecté, envoi à l'API");
         const response = await trackerApi.post("/cookies", {
           userId: user.id,
           ...newPreferences,
         });
         setCookie(response.data.cookie);
+        Cookies.set(
+          COOKIE_PREFERENCES_KEY,
+          JSON.stringify(response.data.cookie),
+          { expires: 7 }
+        );
       } else {
-        // Stockage local
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newPreferences));
+        console.log(
+          "[useCookies] Utilisateur non connecté, enregistrement dans les cookies"
+        );
+        Cookies.set(COOKIE_PREFERENCES_KEY, JSON.stringify(newPreferences), {
+          expires: 7,
+        });
         setCookie(newPreferences);
       }
     } catch (error) {
+      console.error(
+        "[useCookies] Erreur lors de la mise à jour des cookies:",
+        error
+      );
       setError(
         error.response ? error.response.data.message : "Erreur du serveur"
       );

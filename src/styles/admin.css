@@ -1,151 +1,109 @@
 /* Conteneur principal */
 .admin-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 30px;
-    background: var(--background-color); /* Arrière-plan pour l'ensemble de la page */
-  }
-  
-  /* Titre et sous-titre */
-  .admin-header {
-    text-align: center;
-    margin-top: 5px; /* Réduit la marge supérieure */
-    margin-bottom: 10px;
-    color: var(--text-color);
-  }
-  
-  
-  .admin-header h1 {
-    font-size: 36px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-color);
-    margin-bottom: 10px;
-  }
-  
-  .admin-header h2 {
-    font-size: 18px;
-    color: var(--secondary-color);
-    font-weight: 400;
-  }
-  
-  /* Carte des statistiques (disposition flex) */
-  .admin-statistics {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    gap: 20px;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  /* Style des articles dans les cartes de statistiques */
-  .admin-statistics article {
-    background: var(--modal-background);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex: 1 1 calc(33.333% - 20px);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-  }
-  
-  .admin-statistics article:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Titres et sous-titres des cartes */
-  .admin-statistics article .title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-color);
-  }
-  
-  .admin-statistics article .subtitle {
-    font-size: 16px;
-    color: var(--secondary-color);
-  }
-  
-  /* Cartes de statistiques */
-  .stat-card {
-    background: var(--background-color);
-    border-radius: 12px;
-    padding: 20px;
-    width: 250px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  .stat-card .icon {
-    color: var(--primary-color);
-    font-size: 48px;
-    margin-bottom: 10px;
-    transition: color 0.3s ease;
-  }
-  
-  .stat-card .icon:hover {
-    color: var(--primary-hover-color); /* Pour un effet au survol */
-  }
-  
-  .stat-card .title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-color);
-  }
-  
-  .stat-card .subtitle {
-    font-size: 16px;
-    color: var(--secondary-color);
-  }
-  
-  /* Responsivité pour les écrans mobiles */
-  @media (max-width: 768px) {
-    .admin-statistics article {
-      flex: 1 1 100%; /* Chaque article prend 100% de l'espace sur les petits écrans */
-    }
-  }
-  
-  /* Style général pour les icônes */
-  .admin-icon {
-    color: var(--secondary-color); /* Utilise la couleur secondaire définie dans tes variables CSS */
-    transition: color 0.3s ease;
-  }
-  
-  .admin-icon:hover {
-    color: var(--primary-color); /* Changer la couleur au survol */
-  }
-  
-  /* Animation des transitions */
-  @keyframes fadeIn {
-    from {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px 20px;
+  background: var(--background-color);
+  min-height: 100vh;
+}
+
+/* Titre et sous-titre */
+.admin-header {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.admin-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.admin-header p {
+  font-size: 18px;
+  color: var(--secondary-color);
+}
+
+/* Section statistiques */
+.admin-statistics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Cartes des statistiques */
+.admin-statistics article {
+  background: var(--modal-background);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1 1 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-statistics article:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.admin-statistics article .title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.admin-statistics article .subtitle {
+  font-size: 16px;
+  color: var(--secondary-color);
+}
+
+/* Icônes des statistiques */
+.stat-card .icon {
+  color: var(--primary-color);
+  font-size: 50px;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.stat-card:hover .icon {
+  transform: scale(1.1);
+  color: var(--primary-hover-color);
+}
+
+/* Animation fadeIn */
+@keyframes fadeIn {
+  from {
       opacity: 0;
       transform: translateY(20px);
-    }
-    to {
+  }
+  to {
       opacity: 1;
       transform: translateY(0);
-    }
   }
-  
-  /* Appliquer l'animation */
-  .admin-container,
-  .admin-header,
+}
+
+.admin-container, .admin-header, .admin-statistics article {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .admin-statistics {
+      flex-direction: column;
+      align-items: center;
+  }
+
   .admin-statistics article {
-    animation: fadeIn 0.5s ease-out;
+      flex: 1 1 100%;
   }
-  
+}

@@ -8,12 +8,17 @@ const useMessages = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fonction pour envoyer un message
-  const sendMessage = async (userId, content) => {
+  // 🔹 Envoyer un message
+  const sendMessage = async (userId, { title, content }) => {
     setLoading(true);
     try {
-      const response = await trackerApi.post("/messages", { userId, content });
-      setMessages((prevMessages) => [...prevMessages, response.data.data]);
+      const response = await trackerApi.post("/messages/send", {
+        userId,
+        title, // 🔹 Assurer l'envoi du titre
+        content: String(content), // 🔹 Convertir en chaîne au cas où
+      });
+
+      setMessages((prev) => [...prev, response.data.data]); // 🔹 Ajouter uniquement le message
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
     } finally {
@@ -21,11 +26,42 @@ const useMessages = () => {
     }
   };
 
-  // Fonction pour récupérer les messages non lus
+  // 🔹 Répondre à un message
+  const replyToMessage = async (
+    messageId,
+    senderId,
+    content,
+    isAdmin = false
+  ) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.post("/messages/reply", {
+        messageId,
+        content,
+        ...(isAdmin ? { adminId: senderId } : { userId: senderId }), // Détecte si l'expéditeur est admin ou utilisateur
+      });
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, status: "En cours" } : msg
+        )
+      );
+
+      setMessages((prev) => [...prev, response.data.data]);
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+      updateMessageStatus(messageId, "Résolu");
+    }
+  };
+
+  // 🔹 Récupérer les messages non lus
   const getUnreadMessages = async () => {
     setLoading(true);
     try {
       const response = await trackerApi.get("/messages/unread");
+      console.log({ response });
       setMessages(response.data.messages);
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
@@ -34,15 +70,13 @@ const useMessages = () => {
     }
   };
 
-  // Fonction pour marquer un message comme lu
+  // 🔹 Marquer un message comme lu
   const markMessageAsRead = async (messageId) => {
     setLoading(true);
     try {
       const response = await trackerApi.put(`/messages/${messageId}/read`);
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          msg.id === messageId ? response.data.data : msg
-        )
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? response.data.data : msg))
       );
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
@@ -51,16 +85,74 @@ const useMessages = () => {
     }
   };
 
-  // Fonction pour répondre à un message
-  const replyToMessage = async (messageId, adminId, content) => {
+  // 🔹 Récupérer l'historique des messages d'un utilisateur
+  const getMessagesByUserId = async (userId) => {
     setLoading(true);
     try {
-      const response = await trackerApi.post("/messages/reply", {
-        messageId,
-        adminId,
-        content,
+      const response = await trackerApi.get(`/messages/history/${userId}`);
+      setMessages(response.data.messages);
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Récupérer les messages avec pagination
+  const getMessages = async (page = 1, limit = 10, filters = {}) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.get("/messages/filter", {
+        params: {
+          ...filters, // Ajout des filtres
+          page, // Paramètre pour la pagination
+          limit, // Paramètre pour la pagination
+        },
       });
-      setMessages((prevMessages) => [...prevMessages, response.data.data]);
+      setMessages(response.data.messages);
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Supprimer un message
+  const deleteMessage = async (messageId) => {
+    setLoading(true);
+    try {
+      await trackerApi.delete(`/messages/${messageId}`);
+      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Filtrer les messages
+  const getFilteredMessages = async (filters) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.get("/messages", { params: filters });
+      setMessages(response.data.messages);
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Mettre à jour le statut d’un message
+  const updateMessageStatus = async (messageId, status) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.put(`/messages/${messageId}/status`, {
+        status,
+      });
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? response.data.data : msg))
+      );
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
     } finally {
@@ -70,17 +162,15 @@ const useMessages = () => {
 
   // 🔹 Écoute des événements WebSocket
   useEffect(() => {
-    // Écoute les nouveaux messages en temps réel
     socket.on("newMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      setMessages((prev) => [...prev, message]);
     });
 
-    // Écoute les réponses aux messages
     socket.on("newReply", (reply) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
+      setMessages((prev) =>
+        prev.map((msg) =>
           msg.id === reply.messageId
-            ? { ...msg, replies: [...msg.replies, reply] }
+            ? { ...msg, replies: [...(msg.replies || []), reply] }
             : msg
         )
       );
@@ -101,6 +191,11 @@ const useMessages = () => {
     getUnreadMessages,
     markMessageAsRead,
     replyToMessage,
+    getMessagesByUserId,
+    getMessages,
+    deleteMessage,
+    getFilteredMessages,
+    updateMessageStatus,
   };
 };
 

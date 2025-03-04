@@ -1,0 +1,194 @@
+/* Styles pour la page AdminMessages */
+
+/* Conteneur principal */
+.admin-messages-container {
+  padding: 20px;
+  background-color: var(--modal-background);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Titre de la page */
+.admin-messages-title {
+  font-size: 2rem;
+  color: var(--secondary-color);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Sections de filtres et de messages */
+.filter-section {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Input de filtre */
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  background-color: var(--input-background);
+  color: var(--text-color);
+}
+
+/* Tableau des messages */
+.messages-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--input-background);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+/* En-têtes du tableau */
+.messages-table th,
+.messages-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.messages-table th {
+  background: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+/* Titres des messages */
+.message-title {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Contenu des messages */
+.message-content {
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Actions : Aligner les boutons dans la même ligne */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Boutons généraux */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem; /* Assure que tous les boutons aient une taille uniforme */
+}
+
+/* Boutons spécifiques */
+.btn-read {
+  background: var(--focus-background);
+  color: var(--secondary-color);
+}
+
+.btn-reply {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-delete {
+  background: red;
+  color: white;
+}
+
+/* Effet au survol des boutons */
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Section de réponse */
+.reply-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--input-background);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+
+.reply-title {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+}
+
+/* Zone de saisie de réponse */
+.reply-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--input-background);
+}
+
+/* Bouton d'envoi de réponse */
+.btn-send {
+  margin-top: 10px;
+  background: var(--primary-color);
+  color: white;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-send:hover {
+  opacity: 0.8;
+}
+
+/* Modal de conversation */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Message de chargement et erreur */
+.loading-text, .error-message {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-color);
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: red;
+  font-weight: bold;
+}
+
+/* Alignement des cellules du tableau */
+tbody tr td {
+  vertical-align: middle; /* Centrer verticalement le contenu des cellules */
+}
+
+/* Spécifique pour les boutons dans la cellule d'action */
+tbody tr td .btn {
+  width: 100%; /* S'assurer que les boutons prennent toute la largeur de leur cellule */
+  max-width: 130px; /* Limiter la largeur des boutons */
+  font-size: 0.875rem;
+}

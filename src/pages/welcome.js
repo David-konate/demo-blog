@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
+import "./../styles/welcome.css";
+import testImage from "../assets/img/test.png";
 
 // Composants pour le carrousel
 const FeatureCarousel = ({ images }) => {
@@ -18,20 +20,16 @@ const FeatureCarousel = ({ images }) => {
   };
 
   return (
-    <div style={{ marginTop: 10 }}>
-      <button onClick={prevImage} style={{ marginRight: 10 }}>
+    <div className="carousel-container">
+      <button onClick={prevImage} className="carousel-button">
         ◀
       </button>
       <img
         src={images[currentIndex]}
         alt={`Slide ${currentIndex + 1}`}
-        style={{
-          maxWidth: "300px",
-          height: "auto",
-          borderRadius: "8px", // Coins arrondis pour les images
-        }}
+        className="carousel-image"
       />
-      <button onClick={nextImage} style={{ marginLeft: 10 }}>
+      <button onClick={nextImage} className="carousel-button">
         ▶
       </button>
     </div>
@@ -44,7 +42,7 @@ const Welcome = () => {
       title: "Gestion intuitive des articles",
       description:
         "Créez et modifiez facilement vos articles de blog grâce à la syntaxe Markdown.",
-      images: [],
+      images: [testImage], // Utilisation de l'import
     },
     {
       title: "Aperçu en temps réel",
@@ -67,7 +65,7 @@ const Welcome = () => {
   ];
 
   return (
-    <main style={pageStyles}>
+    <main className="welcome-page">
       <Helmet>
         <title>Notre Blog - Articles sur la Tech, le Sport et plus</title>
         <meta
@@ -116,46 +114,45 @@ const Welcome = () => {
         <meta property="og:site_name" content="Nom de Ton Site" />
         <meta name="robots" content="index, follow" />
       </Helmet>
-      <div style={contentStyles}>
-        <h1 style={headingStyles}>
+      <div className="content-container">
+        <h1 className="page-heading">
           Bienvenue sur mon projet de création de blog
           <br />
-          <span style={headingAccentStyles}>
+          <span className="highlight-text">
             — Une solution optimisée pour le CRM d'une entreprise 🚀
           </span>
         </h1>
-        <p style={paragraphStyles}>
+        <p className="description-text">
           Cette application permet de créer et gérer des articles en utilisant
           Markdown, tout en s'intégrant avec un CRM pour une meilleure gestion
           des publications.
         </p>
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="features-list">
           {features.map((feature, index) => (
-            <li key={index} style={{ marginBottom: 24 }}>
-              <h3 style={{ color: "#00d2ff", marginBottom: 8 }}>
-                {feature.title}
-              </h3>
-              <p style={{ margin: 0, color: "#232129" }}>
-                {feature.description}
-              </p>
+            <li key={index} className="feature-item">
+              <h3 className="feature-title">{feature.title}</h3>
+              <p className="feature-description">{feature.description}</p>
               <FeatureCarousel images={feature.images} />
             </li>
           ))}
         </ul>
-        <p>
+        <p className="links-text">
           Découvrez le projet sur{" "}
-          <a style={linkStyle} href="https://github.com/David-konate/demo-blog">
+          <a
+            className="external-link"
+            href="https://github.com/David-konate/demo-blog"
+          >
             GitHub (Front-end)
           </a>{" "}
           et{" "}
           <a
-            style={linkStyle}
+            className="external-link"
             href="https://github.com/David-konate/demo-blog-api"
           >
             GitHub (Back-end)
           </a>
           , ou consultez la{" "}
-          <a style={linkStyle} href="/documentation">
+          <a className="external-link" href="/documentation">
             documentation
           </a>
           .
@@ -163,44 +160,6 @@ const Welcome = () => {
       </div>
     </main>
   );
-};
-
-const pageStyles = {
-  color: "#232129",
-  padding: "96px 24px", // Ajout d'un peu d'espace pour les petits écrans
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-  transition: "all 0.3s ease-in-out",
-  display: "flex",
-  justifyContent: "center", // Centrer horizontalement
-};
-
-const contentStyles = {
-  maxWidth: "900px", // Limite la largeur de l'intérieur pour plus de lisibilité
-  width: "100%",
-  textAlign: "center", // Centrer tout le contenu
-};
-
-const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  color: "#232129",
-};
-
-const headingAccentStyles = {
-  color: "#00d2ff",
-};
-
-const paragraphStyles = {
-  marginBottom: 48,
-  fontSize: "1.2rem",
-  color: "#232129",
-};
-
-const linkStyle = {
-  color: "#00d2ff",
-  fontWeight: "bold",
-  fontSize: 16,
-  transition: "color 0.3s ease",
 };
 
 export default Welcome;

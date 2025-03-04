@@ -3,11 +3,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signUpValidationSchema } from "../../utils/validationSchema";
 import PasswordInput from "./PasswordInput"; // Importation du champ mot de passe
 import "../../styles/login.css";
-import { useAuthContext } from "../../context/use-user-contexte";
 import AtomSpinner from "./Spinner";
+import useAuth from "../../services/authService";
 
 const SignUpModal = ({ isOpen, onClose }) => {
-  const { register, loading } = useAuthContext();
+  const { register, loading } = useAuth();
 
   if (!isOpen) return null;
   return loading ? (
