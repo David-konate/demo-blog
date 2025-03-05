@@ -112,21 +112,18 @@ const useAuth = () => {
   };
 
   const checkAuth = async () => {
-    console.log("checkAuth() exécuté");
     try {
       const token = Cookies.get(TOKEN_KEY);
       if (!token) {
         console.log("Aucun token trouvé");
         return;
       }
-      console.log("Token trouvé, envoi de la requête...");
       setState((prev) => ({ ...prev, loading: true }));
 
       const response = await trackerApi.get("/auth/me", {
         withCredentials: true,
       });
 
-      console.log("Réponse reçue :", response);
       setUser(response.data.user);
     } catch (err) {
       console.log("Erreur de vérification d'authentification :", err);

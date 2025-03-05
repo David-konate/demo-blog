@@ -1,52 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import useAuth from "../../services/authService";
 import useMessages from "../../services/messageService";
 import "../../styles/message.css";
 import { navigate } from "gatsby";
 import AtomSpinner from "../components/Spinner";
 import ConversationModal from "../components/Conversation";
+import useUsers from "../../services/userService";
 
 const AdminMessagesPage = () => {
   const { user, loading: authLoading } = useAuth();
+  const { users, getAllUsers, loading: userLoading } = useUsers();
   const {
     messages,
     loading: messagesLoading,
     getMessages,
     deleteMessage,
-    getMessagesByUserId,
     updateMessageStatus,
   } = useMessages();
 
-  const [replyContent, setReplyContent] = useState("");
-  const [selectedMessage, setSelectedMessage] = useState(null);
-  const [filter, setFilter] = useState({ status: "Nouveau", userId: "" });
+  const [filter, setFilter] = useState({ status: "", userId: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalUserId, setModalUserId] = useState(null);
-
-  // Liste des statuts possibles avec mappage
-  const statusMapping = {
-    Nouveau: "Non lu",
-    EnCours: "En cours",
-    Resolu: "Résolu",
-  };
-
-  // On récupère tous les statuts possibles (clé = statut, valeur = libellé)
-  const statusKeys = Object.keys(statusMapping);
+  const [conversationId, setConversationId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
-    if (!authLoading && user.role !== "admin") {
-      getMessages({ userId: Number(user.id) }); // 🔹 Assurer un nombre
-    } else if (user?.role === "admin") {
-      getMessages();
-    }
-  }, [user, authLoading, navigate]);
+    getAllUsers();
 
-  useEffect(() => {
-    // On applique le filtre sur le statut et les autres critères
-    if (filter.status) {
-      getMessages(filter);
+    if (!authLoading && user?.role === "admin") {
+      getMessages(currentPage, limit, filter);
+    } else {
+      getMessages(currentPage, limit, { userId: user.id });
     }
-  }, [filter, getMessages]);
+  }, [user, authLoading, navigate, currentPage, filter]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -56,19 +43,28 @@ const AdminMessagesPage = () => {
     }));
   };
 
-  const filteredMessages = messages.filter((msg) => {
-    // Filtrage des messages en fonction du statut et d'autres filtres comme l'ID utilisateur
-    const statusMatch = filter.status ? msg.status === filter.status : true;
-    const userIdMatch = filter.userId ? msg.userId === filter.userId : true;
-    return statusMatch && userIdMatch;
-  });
+  const handlePageChange = (newPage) => {
+    if (newPage > 0) {
+      const totalMessages = messages.length;
+      const totalPages = Math.ceil(totalMessages / limit);
 
-  const handleReply = (msg) => {
-    setSelectedMessage(msg);
-    setReplyContent("");
+      if (newPage <= totalPages) {
+        setCurrentPage(newPage);
+      } else {
+        setCurrentPage(1); // Revenir à la première page si la page suivante n'a pas de messages
+      }
+    }
   };
 
-  if (authLoading || messagesLoading) {
+  // Combine the loading states into one check
+  const isLoading = authLoading || messagesLoading || userLoading;
+
+  // Check if there is a next page available
+  const totalMessages = messages.length;
+  const totalPages = Math.ceil(totalMessages / limit);
+  const hasNextPage = currentPage < totalPages;
+
+  if (isLoading) {
     return (
       <p className="loading-text">
         <AtomSpinner />
@@ -88,11 +84,10 @@ const AdminMessagesPage = () => {
           value={filter.status}
           onChange={handleFilterChange}
         >
-          {statusKeys.map((statusKey) => (
-            <option key={statusKey} value={statusKey}>
-              {statusMapping[statusKey]}
-            </option>
-          ))}
+          <option value="">Tout</option>
+          <option value="Nouveau">Non lu</option>
+          <option value="En cours">En cours</option>
+          <option value="Résolu">Résolu</option>
         </select>
 
         <label htmlFor="userId">Filtrer par utilisateur</label>
@@ -109,46 +104,85 @@ const AdminMessagesPage = () => {
       <table className="messages-table">
         <thead>
           <tr>
-            <th>Utilisateur</th>
+            <th>Expéditeur</th>
             <th>Titre</th>
             <th>Message</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredMessages.map((msg) => (
-            <tr key={msg.id}>
-              <td>{user.name}</td>
-              <td className="message-title">{msg.title}</td>
-              <td className="message-content">{msg.content}</td>
-              <td className="actions">
-                <div className="btn btn-read">{msg.status}</div>
-                <button
-                  className="btn btn-reply"
-                  onClick={() => {
-                    setModalUserId(msg.userId);
-                    setIsModalOpen(true);
-                    updateMessageStatus(msg.id, "En cours");
-                  }}
-                >
-                  {msg.status === "Nouveau" ? "Répondre" : "Conversation"}
-                </button>
+          {messages.map((msg) => {
+            const nameSender =
+              user.role !== "admin"
+                ? `Admin : ${msg.admin?.name}`
+                : msg.user?.name || "Utilisateur inconnu"; // Fallback if msg.user is undefined
 
-                <button
-                  className="btn btn-delete"
-                  onClick={() => deleteMessage(msg.id)}
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
+            return (
+              <tr key={msg.id}>
+                <td>{nameSender}</td>
+                <td className="message-title">{msg.title}</td>
+                <td className="message-content">{msg.content}</td>
+                <td className="actions">
+                  <div
+                    className={`msg-status ${
+                      msg.status === "Nouveau"
+                        ? "msg-status-new"
+                        : msg.status === "En cours"
+                        ? "msg-status-in-progress"
+                        : "msg-status-default"
+                    }`}
+                  >
+                    {msg.status}
+                  </div>
+
+                  <button
+                    className="btn btn-reply"
+                    onClick={() => {
+                      setModalUserId(msg.userId);
+                      setIsModalOpen(true);
+                      updateMessageStatus(msg.id, "En cours");
+                      setConversationId(msg.conversationId);
+                    }}
+                  >
+                    {msg.status === "Nouveau" ? "Voir le message" : "Répondre"}
+                  </button>
+
+                  <button
+                    className="btn btn-delete"
+                    onClick={() => deleteMessage(msg.id)}
+                    disabled={
+                      msg.status === "Nouveau" || msg.status === "En cours"
+                    }
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Précédent
+        </button>
+        <span>Page {currentPage}</span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={!hasNextPage} // Disable "Suivant" if there is no next page
+        >
+          Suivant
+        </button>
+      </div>
 
       {isModalOpen && (
         <ConversationModal
           userId={modalUserId}
+          conversationId={conversationId}
           onClose={() => setIsModalOpen(false)}
         />
       )}

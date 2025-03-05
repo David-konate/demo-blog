@@ -16,7 +16,8 @@ export const MessageProvider = ({ children }) => {
     markMessageAsRead, // Fonction pour marquer un message comme lu
     replyToMessage,
     getMessages,
-    getUnreadMessageCount,
+    getMessageCountByStatus,
+    getMessagesByConversation,
   } = useMessages();
 
   return (
@@ -33,7 +34,8 @@ export const MessageProvider = ({ children }) => {
         markMessageAsRead,
         replyToMessage,
         getMessages,
-        getUnreadMessageCount,
+        getMessageCountByStatus,
+        getMessagesByConversation,
       }}
     >
       {children}

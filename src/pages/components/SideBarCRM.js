@@ -33,7 +33,7 @@ const SideBar = () => {
             <Link to="/app/allEvents">Utilsateurs</Link>
           </li>
           <li>
-            <Link to="/app/allSocieties">Messages</Link>
+            <Link to="/app/messages">Messages</Link>
           </li>
         </ul>
 
@@ -53,9 +53,6 @@ const SideBar = () => {
           </li>
           <li>
             <Link to="/app/categories">Créer un Catégorie</Link>
-          </li>
-          <li>
-            <Link to="/app/categories">Ecrire un Message</Link>
           </li>
         </ul>
 

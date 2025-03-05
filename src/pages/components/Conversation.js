@@ -4,11 +4,11 @@ import AtomSpinner from "../components/Spinner";
 import "../../styles/conversation.css";
 import useAuth from "../../services/authService";
 
-const ConversationModal = ({ userId, isAdmin, onClose }) => {
+const ConversationModal = ({ userId, conversationId, isAdmin, onClose }) => {
   const {
     messages,
     loading,
-    getMessagesByUserId,
+    getMessagesByConversation,
     replyToMessage,
     closeConversation,
   } = useMessages();
@@ -18,10 +18,10 @@ const ConversationModal = ({ userId, isAdmin, onClose }) => {
   const [reply, setReply] = useState("");
 
   useEffect(() => {
-    if (userId) {
-      getMessagesByUserId(userId);
+    if (conversationId) {
+      getMessagesByConversation(conversationId);
     }
-  }, [userId]);
+  }, [conversationId]);
 
   useEffect(() => {
     setMessagesList(messages);
@@ -35,25 +35,33 @@ const ConversationModal = ({ userId, isAdmin, onClose }) => {
     if (messagesList.length > 0 && reply.trim() !== "") {
       const lastMessage = messagesList[messagesList.length - 1];
       const firstMessage = messagesList[0];
-
-      const title = lastMessage.title
+      console.log({ lastMessage, firstMessage });
+      // Déterminer le titre original pour la réponse
+      const originalTitle = lastMessage.title
         ? lastMessage.title
         : `RE : ${firstMessage.title}`;
 
-      // Déterminer qui envoie la réponse (admin ou user)
-      const senderId = user.role === "admin" ? user.id : userId;
-      const senderIsAdmin = user.role === "admin";
-
-      replyToMessage(lastMessage.id, senderId, reply, title, senderIsAdmin);
+      // Si c'est un admin, on ajoute aussi l'adminId
+      const adminId = user.role === "admin" ? user.id : null;
+      const userId = firstMessage.userId;
+      // Envoi de la réponse
+      replyToMessage(
+        lastMessage.id,
+        reply,
+        originalTitle,
+        userId,
+        adminId // Ajout de l'adminId si c'est un admin
+      );
 
       setReply(""); // Réinitialiser le champ après l'envoi
-      onClose();
+      onClose(); // Fermer la modal après l'envoi
     }
   };
 
   const handleCloseConversation = () => {
     if (messagesList.length > 0) {
       closeConversation(messagesList[0].id);
+      onClose(); // Fermer la modal après la clôture de la conversation
     }
   };
 

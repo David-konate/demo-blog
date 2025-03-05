@@ -30,39 +30,76 @@ const useMessages = () => {
   // 🔹 Répondre à un message
   const replyToMessage = async (
     messageId,
-    senderId,
     content,
-    isAdmin = false
+    originalTitle,
+    userId,
+    adminId
   ) => {
     setLoading(true);
     try {
+      // Envoi de la requête de réponse
       const response = await trackerApi.post("/messages/reply", {
         messageId,
         content,
-        ...(isAdmin ? { adminId: senderId } : { userId: senderId }), // Détecte si l'expéditeur est admin ou utilisateur
+        title: originalTitle, // Ajouter le titre du message original
+        userId, // Toujours envoyer userId pour savoir avec qui l'administrateur discute
+        ...(adminId ? { adminId } : {}), // Ajouter adminId seulement si l'utilisateur est un admin
       });
 
+      // Mise à jour de l'état des messages : on marque le message comme "En cours"
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === messageId ? { ...msg, status: "En cours" } : msg
         )
       );
 
+      // Ajout de la nouvelle réponse dans l'état des messages
       setMessages((prev) => [...prev, response.data.data]);
+
+      // Si une réponse a été ajoutée avec succès, on met à jour son statut à "Résolu"
+      updateMessageStatus(messageId, "Résolu");
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
     } finally {
       setLoading(false);
-      updateMessageStatus(messageId, "Résolu");
     }
   };
+
+  // // 🔹 Gestion de l'envoi de la réponse
+  // const handleSendReply = () => {
+  //   if (messagesList.length > 0 && reply.trim() !== "") {
+  //     const lastMessage = messagesList[messagesList.length - 1];
+  //     const firstMessage = messagesList[0];
+  //     console.log({ lastMessage, firstMessage });
+
+  //     // Déterminer le titre original pour la réponse
+  //     const originalTitle = lastMessage.title
+  //       ? lastMessage.title
+  //       : `RE : ${firstMessage.title}`;
+
+  //     // Si c'est un admin, on ajoute aussi l'adminId
+  //     const adminId = user.role === "admin" ? user.id : null;
+  //     const userId = firstMessage.userId;
+
+  //     // Envoi de la réponse
+  //     replyToMessage(
+  //       lastMessage.id,
+  //       reply,
+  //       originalTitle,
+  //       userId,
+  //       adminId // Ajout de l'adminId si c'est un admin
+  //     );
+
+  //     setReply(""); // Réinitialiser le champ après l'envoi
+  //     onClose(); // Fermer la modal après l'envoi
+  //   }
+  // };
 
   // 🔹 Récupérer les messages non lus
   const getUnreadMessages = async () => {
     setLoading(true);
     try {
       const response = await trackerApi.get("/messages/unread");
-      console.log({ response });
       setMessages(response.data.messages);
     } catch (error) {
       setError(error.response ? error.response.data.message : "Erreur serveur");
@@ -135,7 +172,7 @@ const useMessages = () => {
   const updateMessageStatus = async (messageId, status) => {
     setLoading(true);
     try {
-      const response = await trackerApi.put(`/messages/${messageId}/status`, {
+      const response = await trackerApi.put(`/messages/status/${messageId}`, {
         status,
       });
       setMessages((prev) =>
@@ -170,21 +207,37 @@ const useMessages = () => {
     };
   }, []);
 
-  // 🔹 Fonction pour récupérer le nombre de messages non lus
-  const getUnreadMessageCount = async (userId = null) => {
-    console.log("getcout");
+  // 🔹 Fonction pour récupérer le nombre de messages par statut
+  const getMessageCountByStatus = async (status, userId = null) => {
     try {
-      const response = await trackerApi.get("/messages/unreadCount", {
-        params: userId ? { userId } : {},
+      const response = await trackerApi.get("/messages/countByStatus", {
+        params: {
+          status, // Le statut des messages à filtrer, comme "Nouveau", "En cours", etc.
+          userId, // Optionnel : si un userId est fourni, il sera inclus dans les paramètres
+        },
       });
-      console.log(response.data.unreadCount);
-      setCountMessage(response.data.unreadCount);
+      setCountMessage(response.data); // Mets à jour l'état avec le nombre de messages
     } catch (error) {
       console.error(
-        "Erreur lors de la récupération du nombre de messages non lus :",
+        "Erreur lors de la récupération du nombre de messages par statut :",
         error
       );
       return 0; // Retourne 0 en cas d'erreur pour éviter de planter l'affichage
+    }
+  };
+
+  const getMessagesByConversation = async (conversationId) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.get(
+        `/conversations/${conversationId}/messages`
+      );
+
+      setMessages(response.data.messages); // Stocke les messages de la conversation
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -201,9 +254,9 @@ const useMessages = () => {
     getMessagesByUserId,
     getMessages,
     deleteMessage,
-
+    getMessagesByConversation,
     updateMessageStatus,
-    getUnreadMessageCount,
+    getMessageCountByStatus,
   };
 };
 

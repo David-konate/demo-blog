@@ -73,7 +73,7 @@ input, select {
 
 /* Contenu des messages */
 .message-content {
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 0.875rem;
   line-height: 1.5;
 }
@@ -95,11 +95,15 @@ input, select {
   font-size: 0.875rem; /* Assure que tous les boutons aient une taille uniforme */
 }
 
-/* Boutons spécifiques */
-.btn-read {
+/* Suppression du curseur et de la transition pour éviter l'effet bouton */
+.msg-status {
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.875rem;
   background: var(--focus-background);
-  color: var(--secondary-color);
+  color: var(--text-color);
 }
+
 
 .btn-reply {
   background: var(--primary-color);
@@ -191,4 +195,61 @@ tbody tr td .btn {
   width: 100%; /* S'assurer que les boutons prennent toute la largeur de leur cellule */
   max-width: 130px; /* Limiter la largeur des boutons */
   font-size: 0.875rem;
+}
+/* Styles pour les boutons de navigation */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pagination button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+/* Style du numéro de page */
+.pagination span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+* Couleur du texte pour le statut */
+.msg-status-new {
+  background-color: #ff4d4d;
+  color: var(--secondary-color);
+  font-weight: bold;
+
+}
+
+.msg-status-in-progress {
+  background-color: #ffcc00;
+  color: var(--secondary-color);
+  font-weight: bold;
+
+}
+
+.msg-status-default {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-weight: bold;
 }

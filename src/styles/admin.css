@@ -107,3 +107,48 @@
       flex: 1 1 100%;
   }
 }
+
+
+/* Couleurs dynamiques en fonction du statut des messages */
+.message-status-new {
+  background-color: #fce4e4; /* Couleur de fond pour les messages non lus */
+  color: #ff4d4d; /* Couleur du texte pour les messages non lus */
+}
+
+.message-status-in-progress {
+  background-color: #f0e68c; /* Couleur de fond pour les messages en cours */
+  color: #ffcc00; /* Couleur du texte pour les messages en cours */
+}
+
+.message-status-default {
+  background-color: var(--modal-background); /* Couleur de fond par défaut */
+  color: var(--text-color); /* Couleur du texte par défaut */
+}
+
+/* Icônes dynamiques en fonction du statut */
+.icon-status-new {
+  color: #ff4d4d; /* Couleur de l'icône pour les messages non lus */
+}
+
+.icon-status-in-progress {
+  color: #ffcc00; /* Couleur de l'icône pour les messages en cours */
+}
+
+.icon-status-default {
+  color: var(--primary-color); /* Couleur de l'icône par défaut */
+}
+
+/* Désactivation du bouton de suppression */
+.btn.btn-delete:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Couleur grise pour les messages "Nouveau" ou "En cours" */
+.message-status-disabled {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
