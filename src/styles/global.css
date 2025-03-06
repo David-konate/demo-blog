@@ -18,6 +18,12 @@
   --admin-message-bg: #fce4ec; /* Rose clair */
   --danger-color: #e74c3c; /* Rouge vif */
   --danger-dark: #c0392b;  /* Rouge plus foncé */
+  --text-shadow: 0 0 5px cyan;
+  --box-shadow-special: 0px 0px 15px rgba(0, 255, 255, 0.2);
+  --btn-bg: var(--gradient-bg);
+  --btn-hover-gradient: linear-gradient(135deg, #0a6bcc, #121231); /* Teintes plus sombres */
+  --btn-text-color: white;
+  --btn-glow-color: rgba(255, 0, 0, 0.1); /* Lueur rouge subtile */
 }
 
 /* Thème sombre */
@@ -28,17 +34,23 @@
   --background-color: #121212;
   --input-background: #222;
   --border-color: #444;
-  --box-shadow-color: #000000;
+  --box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.05); /* Ombre plus douce */
+  --box-shadow-color: rgba(255, 255, 255, 0.1);
   --overlay-color: rgba(255, 255, 255, 0.1);
   --modal-background: #1e1e1e;
   --modal-shadow: rgba(0, 255, 255, 0.2);
   --gradient-bg: linear-gradient(135deg, #1e90ff, #0a0a1e);
   --focus-background: #333;
-  --box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
   --user-message-bg: #1565c0;  /* Bleu plus foncé pour meilleure lisibilité */
   --admin-message-bg: #ad1457; /* Rose plus foncé */
   --danger-color: #ff4c4c; /* Rouge plus clair pour contraste */
   --danger-dark: #b22222;  
+  --text-shadow: 0 0 8px #00bcd4; /* Cyan plus lumineux pour un contraste plus élevé */
+  --box-shadow-special: 0px 0px 20px rgba(0, 255, 255, 0.3); 
+  --btn-bg: var(--gradient-bg);
+  --btn-hover-gradient: linear-gradient(135deg, #1668c1, #040417); /* Ajusté pour le sombre */
+  --btn-text-color: white;
+  --btn-glow-color: rgba(230, 107, 107, 0.15); /* Lueur blanche plus douce */
 }
 
 
@@ -153,7 +165,7 @@ section {
   background: var(--modal-background);
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   margin-top: 2rem;
   transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }

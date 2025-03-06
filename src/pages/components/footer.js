@@ -13,10 +13,13 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-grid">
         <div className="footer-links">
-          <Link className="footer-link" to="/mentions-legales">
+          <Link className="footer-link" to="/legal">
             Mentions Légales
           </Link>
-          <Link className="footer-link" to="/politique-confidentialite">
+          <Link className="footer-link" to="/terms">
+            CGU
+          </Link>
+          <Link className="footer-link" to="/privacy">
             Politique de Confidentialité
           </Link>
         </div>

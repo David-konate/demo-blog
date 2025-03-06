@@ -242,11 +242,12 @@ const useMessages = () => {
   };
 
   // 🔹 Envoyer une newsletter à tous les utilisateurs ayant accepté
-  const sendNewsletter = async (subject, content) => {
+  const sendNewsletter = async (title, content) => {
     setLoading(true);
+
     try {
       const response = await trackerApi.post("/messages/send/newsletter", {
-        subject,
+        title,
         content, // Le contenu de la newsletter
       });
 

@@ -7,24 +7,16 @@ import useAuth from "../../services/authService";
 import useMessage from "../../services/messageService";
 
 const Newsletter = ({ onClose }) => {
-  const { getUserFromStorage } = useAuth();
-  const { sendMessage } = useMessage();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
+  const { sendNewsletter } = useMessage();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    setUser(getUserFromStorage());
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [getUserFromStorage]);
-
-  const handleCall = () => {
-    if (window && window.navigator) {
-      window.location.href = "tel:+33763418790";
-    }
-  };
+  }, []);
 
   // Schéma de validation avec Yup
   const validationSchema = Yup.object({
@@ -48,7 +40,7 @@ const Newsletter = ({ onClose }) => {
         content: String(values.content), // Forcer le message à être une chaîne
       };
 
-      await sendMessage(user.id, formattedValues);
+      await sendNewsletter(user.id, formattedValues);
       console.log("Message envoyé avec succès :", formattedValues);
 
       resetForm(); // Réinitialise le formulaire après l'envoi

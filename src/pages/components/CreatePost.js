@@ -80,6 +80,32 @@ const CreatePost = () => {
     },
   };
 
+  const customCommandSectionOpen = {
+    name: "my-custom-command-section-open",
+    icon: () => (
+      <span role="img" aria-label="Section Open">
+        <strong>&lt;section&gt;</strong>
+      </span>
+    ),
+    execute: (opts) => {
+      // Insérer <section> au début de la sélection
+      opts.textApi.replaceSelection("<section>");
+    },
+  };
+
+  const customCommandSectionClose = {
+    name: "my-custom-command-section-close",
+    icon: () => (
+      <span role="img" aria-label="Section Close">
+        <strong>&lt;/section&gt;</strong>
+      </span>
+    ),
+    execute: (opts) => {
+      // Insérer </section> à la fin de la sélection
+      opts.textApi.replaceSelection("</section>");
+    },
+  };
+
   const converter = new Showdown.Converter({
     tables: true,
     simplifiedAutoLink: true,
@@ -239,7 +265,7 @@ const CreatePost = () => {
                       />
                     </div>
                   )}
-                  <div className="label-container">
+                  <div className="label-container-create-post">
                     <label>Contenu</label>
                     <MarkdownInfo />
                   </div>
@@ -253,8 +279,9 @@ const CreatePost = () => {
                     commands={{
                       h4: customCommandH4,
                       indentation: customCommand,
-
                       h5: customCommandH5,
+                      sectionOpen: customCommandSectionOpen, // Commande pour <section>
+                      sectionClose: customCommandSectionClose, // Commande pour </section>
                     }}
                     toolbarCommands={[
                       [
@@ -265,12 +292,15 @@ const CreatePost = () => {
                         "bold",
                         "italic",
                         "image",
+                        "sectionOpen", // Ajouter le bouton pour <section>
+                        "sectionClose", // Ajouter le bouton pour </section>
                       ],
                     ]}
                     generateMarkdownPreview={(markdown) =>
                       Promise.resolve(converter.makeHtml(markdown))
                     }
                   />
+
                   <button
                     type="submit"
                     className="btn"

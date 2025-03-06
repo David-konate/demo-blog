@@ -7,18 +7,8 @@ import useAuth from "../../services/authService";
 import useMessage from "../../services/messageService";
 
 const ContactModalAdmin = ({ onClose }) => {
-  const { getUserFromStorage } = useAuth();
   const { sendMessage } = useMessage();
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    setUser(getUserFromStorage());
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [getUserFromStorage]);
 
   const handleCall = () => {
     if (window && window.navigator) {

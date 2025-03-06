@@ -989,7 +989,7 @@
     "@babel/plugin-transform-modules-commonjs" "^7.25.9"
     "@babel/plugin-transform-typescript" "^7.25.9"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.26.9"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.26.9.tgz#aa4c6facc65b9cb3f87d75125ffd47781b475433"
   integrity sha512-aA63XwOkcl4xxQa3HjPMqOP6LiK0ZDv3mUPYEFXkpHbaFjtGggE1A61FjFzJnB+p7/oy2gA8E+rcBNl/zC1tMg==
@@ -5705,6 +5705,13 @@ gatsby-parcel-config@1.14.0:
     "@parcel/runtime-js" "2.8.3"
     "@parcel/transformer-js" "2.8.3"
     "@parcel/transformer-json" "2.8.3"
+
+gatsby-plugin-create-client-paths@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.npmjs.org/gatsby-plugin-create-client-paths/-/gatsby-plugin-create-client-paths-4.9.0.tgz#7a62d73f11e8a495c2825c24723698016206fe41"
+  integrity sha512-armchfoLrmpjnQYfmWgFMsnjlRTAXBdxuPBOgilcbopmcX3wLjRb/NwzWokqV9ovmo090LF3Dm0dGQTL4nap7A==
+  dependencies:
+    "@babel/runtime" "^7.15.4"
 
 gatsby-plugin-google-gtag@^5.14.0:
   version "5.14.0"

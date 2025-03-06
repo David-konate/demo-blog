@@ -1,0 +1,141 @@
+/* Style pour le bouton d'information */
+.info-button.info {
+    background-color: transparent;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+    padding: 8px 14px;
+    text-shadow: var(--text-shadow-special);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.info-button.info:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    color: var(--highlight-color);
+    text-shadow: var(--text-shadow-special);
+}
+
+/* Style pour la modale */
+.modal-overlay.info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+}
+
+.modal-content.info {
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%; /* Prend toute la largeur disponible */
+    max-width: 720px; /* Limite la largeur à 720px */
+    box-shadow: 0px 0px 20px var(--modal-shadow);
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    overflow-y: auto;
+    max-height: 80vh; /* Limite la hauteur à 80% de la fenêtre */
+    transform: scale(0.95);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--modal-background);
+}
+
+.modal-content.info:hover {
+    box-shadow: 0px 0px 30px var(--modal-shadow);
+    transform: scale(1);
+}
+
+.modal-content.info h2, .modal-content.info h3 {
+    text-transform: uppercase;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px cyan;
+}
+
+.modal-content.info table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--box-shadow);
+    border-radius: 10px;
+}
+
+.modal-content.info table th, .modal-content.info table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+}
+
+.modal-content.info code {
+    background: rgba(0, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    text-shadow: var(--text-shadow-special);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Section d'images */
+.modal-content.info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-content.info li {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.modal-content.info svg {
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+    stroke: var(--primary-color);
+    stroke-width: 2;
+    fill: none;
+    transition: transform 0.3s ease;
+}
+
+.modal-content.info svg:hover {
+    transform: scale(1.1);
+}
+
+/* Bouton de fermeture */
+.close-button.info-md {
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: var(--text-shadow-special);
+}
+
+.close-button.info-md:hover {
+    background-color: var(--primary-color);
+    color: black;
+    transform: scale(1.1);
+    box-shadow: 0px 0px 15px var(--primary-color);
+}
