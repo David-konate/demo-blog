@@ -10,6 +10,7 @@ export const MessageProvider = ({ children }) => {
     loading, // Indicateur de chargement pour les messages
     error, // Erreur si quelque chose ne va pas lors de la récupération des messages
     countMessage,
+    sendNewsletter,
     getMessagesByUserId,
     sendMessage, // Fonction pour envoyer un message
     getUnreadMessages, // Fonction pour récupérer les messages non lus
@@ -28,6 +29,7 @@ export const MessageProvider = ({ children }) => {
         loading,
         error,
         countMessage,
+        sendNewsletter,
         getMessagesByUserId,
         sendMessage,
         getUnreadMessages,

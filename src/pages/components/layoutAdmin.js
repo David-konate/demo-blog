@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Footer from "./Footer";
-import "../../styles/global.css"; // Assure-toi d'inclure tes styles globaux
+import "../../styles/global.css";
 import SideBar from "./SideBarCRM";
 import NavbarAdmin from "./NavBarAdmin";
+import CookiesModal from "./Cookie";
+import useAuth from "../../services/authService";
 
 export function useMedia(query) {
   const [matches, setMatches] = useState(
@@ -23,10 +25,18 @@ export function useMedia(query) {
 const LayoutAdmin = ({ children }) => {
   const isPhone = useMedia("(max-width: 768px)");
   const isLaptop = useMedia("(min-width: 1024px)");
-
+  const { user } = useAuth(); // Assuming the user info is fetched from authService
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [isCookiesModalOpen, setIsCookiesModalOpen] = useState(false);
+  console.log(user);
 
   const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
+
+  useEffect(() => {
+    if (user && user.loginCount === 1) {
+      setIsCookiesModalOpen(true); // Open the modal if user.logincount === 1
+    }
+  }, [user]);
 
   return (
     <div className="page-container">
@@ -38,6 +48,7 @@ const LayoutAdmin = ({ children }) => {
       )}
       {isPhone && sidebarVisible && <SideBar />} {/* Show Sidebar button */}
       {!isPhone && <SideBar />} {/* Always show Sidebar on larger screens */}
+      {/* Main Content */}
       <main className="content">
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
@@ -46,6 +57,11 @@ const LayoutAdmin = ({ children }) => {
         )}
       </main>
       <Footer />
+      {/* Cookies Modal */}
+      <CookiesModal
+        isOpen={isCookiesModalOpen}
+        onClose={() => setIsCookiesModalOpen(false)}
+      />
     </div>
   );
 };

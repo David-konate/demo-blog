@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import useCookies from "../services/cookieService";
 import "../styles/parametres.css";
 import useAuth from "../services/authService";
 import AtomSpinner from "./components/Spinner";
@@ -7,7 +6,6 @@ import CookiesModal from "./components/Cookie";
 
 const Parametres = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const { cookie, loading } = useCookies();
   const { user } = useAuth();
   const [isCookieModalOpen, setCookieModalOpen] = useState(false);
 
@@ -24,9 +22,7 @@ const Parametres = () => {
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
 
-  return cookie ? (
-    <AtomSpinner />
-  ) : (
+  return (
     <div className="params-container">
       <h1>Paramètres</h1>
       <p>Personnalise ton expérience selon tes préférences.</p>

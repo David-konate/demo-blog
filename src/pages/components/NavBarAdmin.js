@@ -8,13 +8,26 @@ import {
   FaTimes,
   FaLinkedin,
 } from "react-icons/fa";
-import ContactModal from "./ContactModal"; // Importation de la modal
+import ArticlePreview from "./ArticlePreview"; // Modal générique
 import "../../styles/global.css"; // Assurez-vous que le fichier global.css est bien importé
-import ContactModalAdmin from "./ContactModalAdmin";
+import ContactModalAdmin from "./ContactModalAdmin"; // Modal pour l'admin
+import useAuth from "../../services/authService";
+import Newsletter from "./Newsletter";
 
 const NavbarAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth(); // Récupération de l'utilisateur connecté
+
+  const handleModalOpen = () => {
+    if (user.role === "admin") {
+      // Ouvre la modal spécifique pour la newsletter si l'utilisateur est un admin
+      setIsModalOpen(true);
+    } else {
+      // Ouvre la modal générique de contact pour les autres utilisateurs
+      setIsModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -78,15 +91,18 @@ const NavbarAdmin = () => {
             </a>
           </div>
 
-          {/* Bouton qui ouvre la modal */}
-          <button className="contact-btn" onClick={() => setIsModalOpen(true)}>
-            Contactez-nous
+          {/* Bouton qui ouvre la modal - newsletter pour admin, contact pour autres utilisateurs */}
+          <button className="contact-btn" onClick={handleModalOpen}>
+            {user.role === "admin" ? "Newsletter" : "Contactez-nous"}
           </button>
         </div>
       </nav>
 
-      {/* Affichage de la modal si isModalOpen est true */}
-      {isModalOpen && (
+      {/* Affichage de la modal appropriée en fonction du rôle */}
+      {isModalOpen && user.role === "admin" && (
+        <Newsletter onClose={() => setIsModalOpen(false)} />
+      )}
+      {isModalOpen && user.role !== "admin" && (
         <ContactModalAdmin onClose={() => setIsModalOpen(false)} />
       )}
     </>

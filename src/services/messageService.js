@@ -241,12 +241,31 @@ const useMessages = () => {
     }
   };
 
+  // 🔹 Envoyer une newsletter à tous les utilisateurs ayant accepté
+  const sendNewsletter = async (subject, content) => {
+    setLoading(true);
+    try {
+      const response = await trackerApi.post("/messages/send/newsletter", {
+        subject,
+        content, // Le contenu de la newsletter
+      });
+
+      // Si l'envoi de la newsletter est réussi, tu peux mettre à jour les messages si nécessaire
+      console.log(response.data); // Affiche la réponse
+    } catch (error) {
+      setError(error.response ? error.response.data.message : "Erreur serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     messages,
     message,
     loading,
     error,
     countMessage,
+    sendNewsletter,
     sendMessage,
     getUnreadMessages,
     markMessageAsRead,

@@ -8,20 +8,10 @@ const TOKEN_KEY =
   "6e025402321a87b4e9f4729421059d34a0a40bda09a63c2ef6c84968f4f1b36bc471188416a4831e12f7b6f4738a13c6243ae6c2b3033ee25c6c85d74b351b2a";
 const isBrowser = () => typeof window !== "undefined";
 
-const getUserFromStorage = () => {
-  if (isBrowser()) {
-    const user = localStorage.getItem("gatsbyUser");
-    return user ? JSON.parse(user) : null;
-  }
-  return null;
-};
-
-const setUserToStorage = (user) => {
-  if (isBrowser()) {
-    localStorage.setItem("gatsbyUser", JSON.stringify(user));
-  }
-};
-
+const getLocalData = (key) =>
+  isBrowser() ? JSON.parse(localStorage.getItem(key)) : null;
+const setLocalData = (key, data) =>
+  isBrowser() && localStorage.setItem(key, JSON.stringify(data));
 const clearAuth = () => {
   if (isBrowser()) {
     localStorage.removeItem("gatsbyUser");
@@ -31,15 +21,17 @@ const clearAuth = () => {
 
 const useAuth = () => {
   const [state, setState] = useState({
-    user: getUserFromStorage(),
+    user: getLocalData("gatsbyUser"),
     loading: false,
     error: null,
     userCount: 0,
+    cookiePreferences: null,
+    newsletterSubscription: null,
   });
 
   const setUser = (user) => {
     if (user) {
-      setUserToStorage(user);
+      setLocalData("gatsbyUser", user);
       setState((prev) => ({ ...prev, user }));
     }
   };
@@ -47,16 +39,17 @@ const useAuth = () => {
   const register = async (email, password, name, role = "user") => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const response = await trackerApi.post(
-        "/auth/register",
-        { email, password, name, role },
-        { withCredentials: true }
-      );
+      const response = await trackerApi.post("/auth/register", {
+        email,
+        password,
+        name,
+        role,
+      });
       Cookies.set(TOKEN_KEY, response.data.token, { expires: 7 });
       setUser(response.data.user);
       navigate("/");
     } catch (err) {
-      console.log("Erreur de registre :", err);
+      console.error("Erreur d'inscription :", err);
       setState((prev) => ({ ...prev, error: "Erreur lors de l'inscription" }));
     } finally {
       setState((prev) => ({ ...prev, loading: false }));
@@ -66,16 +59,15 @@ const useAuth = () => {
   const login = async (email, password) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const response = await trackerApi.post(
-        "/auth/login",
-        { email, password },
-        { withCredentials: true }
-      );
+      const response = await trackerApi.post("/auth/login", {
+        email,
+        password,
+      });
       Cookies.set(TOKEN_KEY, response.data.token, { expires: 7 });
       setUser(response.data.user);
       navigate("/app/admin");
     } catch (err) {
-      console.log("Erreur de login :", err);
+      console.error("Erreur de connexion :", err);
       setState((prev) => ({ ...prev, error: "Échec de la connexion" }));
     } finally {
       setState((prev) => ({ ...prev, loading: false }));
@@ -88,22 +80,18 @@ const useAuth = () => {
       if (!googleToken) throw new Error("Aucun token Google reçu");
 
       const decoded = jwtDecode(googleToken);
-      const res = await trackerApi.post(
-        "/auth/google",
-        {
-          name: decoded.name,
-          email: decoded.email,
-          googleId: decoded.sub,
-        },
-        { withCredentials: true }
-      );
+      const res = await trackerApi.post("/auth/google", {
+        name: decoded.name,
+        email: decoded.email,
+        googleId: decoded.sub,
+      });
 
       Cookies.set(TOKEN_KEY, res.data.token, { expires: 7 });
       setUser(res.data.user);
       await checkAuth();
       navigate("/");
     } catch (err) {
-      console.log("Erreur de connexion Google :", err);
+      console.error("Erreur de connexion Google :", err);
       setState((prev) => ({
         ...prev,
         error: "Échec de la connexion avec Google",
@@ -114,19 +102,14 @@ const useAuth = () => {
   const checkAuth = async () => {
     try {
       const token = Cookies.get(TOKEN_KEY);
-      if (!token) {
-        console.log("Aucun token trouvé");
-        return;
-      }
+      if (!token) return;
+
       setState((prev) => ({ ...prev, loading: true }));
-
-      const response = await trackerApi.get("/auth/me", {
-        withCredentials: true,
-      });
-
+      const response = await trackerApi.get("/auth/me");
       setUser(response.data.user);
     } catch (err) {
-      console.log("Erreur de vérification d'authentification :", err);
+      console.error("Erreur de vérification d'authentification :", err);
+      clearAuth();
     } finally {
       setState((prev) => ({ ...prev, loading: false }));
     }
@@ -138,12 +121,12 @@ const useAuth = () => {
 
   const logout = async () => {
     try {
-      await trackerApi.post("/auth/logout", {}, { withCredentials: true });
+      await trackerApi.post("/auth/logout");
       clearAuth();
       setUser(null);
       navigate("/login");
     } catch (err) {
-      console.log("Erreur de déconnexion :", err);
+      console.error("Erreur de déconnexion :", err);
       setState((prev) => ({ ...prev, error: "Erreur lors de la déconnexion" }));
     }
   };
@@ -153,7 +136,7 @@ const useAuth = () => {
       const response = await trackerApi.get("/count-users");
       setState((prev) => ({ ...prev, userCount: response.data.userCount }));
     } catch (err) {
-      console.log("Erreur de récupération du nombre d'utilisateurs :", err);
+      console.error("Erreur de récupération du nombre d'utilisateurs :", err);
       setState((prev) => ({
         ...prev,
         error: "Erreur lors du chargement des données",
@@ -169,7 +152,27 @@ const useAuth = () => {
     checkAuth,
     logout,
     getUserCount,
-    getUserFromStorage,
+    updateUserPreferences: async (preferences) => {
+      try {
+        await trackerApi.put(`/auth/${state.user.id}/cookies`, preferences);
+        setState((prev) => ({ ...prev, cookiePreferences: preferences }));
+      } catch (err) {
+        console.error("Erreur mise à jour préférences cookies :", err);
+      }
+    },
+    updateNewsletterSubscription: async (subscribed) => {
+      try {
+        await trackerApi.put(`/auth/${state.user.id}/newsletter`, {
+          subscribed,
+        });
+        setState((prev) => ({
+          ...prev,
+          newsletterSubscription: { subscribed },
+        }));
+      } catch (err) {
+        console.error("Erreur mise à jour abonnement newsletter :", err);
+      }
+    },
     isLoggedIn: () => !!state.user,
   };
 };

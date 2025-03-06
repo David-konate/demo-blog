@@ -31,6 +31,7 @@ label {
   margin-bottom: 0.5rem;
 }
 
+
 /* Input de filtre */
 input, select {
   width: 100%;
@@ -41,7 +42,10 @@ input, select {
   background-color: var(--input-background);
   color: var(--text-color);
 }
-
+.table-container {
+  overflow-x: auto; /* Ajoute une barre de défilement horizontale si nécessaire */
+  max-width: 100%; /* S'assure que le conteneur prend toute la largeur du parent */
+}
 /* Tableau des messages */
 .messages-table {
   width: 100%;
@@ -57,6 +61,7 @@ input, select {
 .messages-table td {
   padding: 12px;
   text-align: left;
+  vertical-align: middle; /* Centrer verticalement le contenu des cellules */
 }
 
 .messages-table th {
@@ -78,46 +83,67 @@ input, select {
   line-height: 1.5;
 }
 
-/* Actions : Aligner les boutons dans la même ligne */
+/* Actions : Alignement des boutons et icônes */
 .actions {
   display: flex;
+  align-items: center; /* Alignement vertical */
   gap: 12px;
-  justify-content: center;
+  justify-content: space-around;
 }
 
-/* Boutons généraux */
-.btn {
+.actions .btn {
+  width: auto; /* Les boutons doivent avoir une largeur automatique */
+  font-size: 0.875rem;
   padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.875rem; /* Assure que tous les boutons aient une taille uniforme */
+  transition: opacity 0.3s ease;
 }
 
-/* Suppression du curseur et de la transition pour éviter l'effet bouton */
+/* Icône de suppression */
+.icon-delete {
+  color: red;
+  cursor: pointer;
+  font-size: 1.5rem;  /* Taille de l'icône */
+  transition: opacity 0.3s ease;
+  padding: 4px; /* Espacement autour de l'icône */
+}
+
+.icon-delete:hover {
+  opacity: 0.8;
+}
+
+/* Effet au survol des boutons */
+.btn:hover, .icon-delete:hover {
+  opacity: 0.8;
+}
+
+/* Statut des messages */
 .msg-status {
   padding: 8px 12px;
   border-radius: 5px;
   font-size: 0.875rem;
   background: var(--focus-background);
   color: var(--text-color);
+  min-width: 78px;
+  text-align: center;
 }
 
-
-.btn-reply {
-  background: var(--primary-color);
-  color: white;
+/* Statuts spécifiques */
+.msg-status-new {
+  background-color: #ff4d4d;
+  color: var(--secondary-color);
+  font-weight: bold;
 }
 
-.btn-delete {
-  background: red;
-  color: white;
+.msg-status-in-progress {
+  background-color: #ffcc00;
+  color: var(--secondary-color);
+  font-weight: bold;
 }
 
-/* Effet au survol des boutons */
-.btn:hover {
-  opacity: 0.8;
+.msg-status-default {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-weight: bold;
 }
 
 /* Section de réponse */
@@ -172,6 +198,44 @@ input, select {
   align-items: center;
 }
 
+/* Pagination des messages */
+.pagination-messages {
+  display: flex;
+  justify-content: flex-end; /* Aligner la pagination à droite */
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination-messages button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.pagination-messages button:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pagination-messages button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+/* Style du numéro de page */
+.pagination-messages span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
 /* Message de chargement et erreur */
 .loading-text, .error-message {
   text-align: center;
@@ -185,71 +249,15 @@ input, select {
   font-weight: bold;
 }
 
-/* Alignement des cellules du tableau */
-tbody tr td {
-  vertical-align: middle; /* Centrer verticalement le contenu des cellules */
+/* Responsive */
+@media (max-width: 768px) {
+  .message-title-header,
+  .message-title,
+  .message-content-header,
+  .message-content {
+    display: none;
+  }
 }
-
-/* Spécifique pour les boutons dans la cellule d'action */
-tbody tr td .btn {
-  width: 100%; /* S'assurer que les boutons prennent toute la largeur de leur cellule */
-  max-width: 130px; /* Limiter la largeur des boutons */
-  font-size: 0.875rem;
-}
-/* Styles pour les boutons de navigation */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.pagination button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background: var(--primary-color);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.pagination button:disabled {
-  background: var(--border-color);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.pagination button:hover:not(:disabled) {
-  opacity: 0.8;
-}
-
-/* Style du numéro de page */
-.pagination span {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--text-color);
-}
-* Couleur du texte pour le statut */
-.msg-status-new {
-  background-color: #ff4d4d;
-  color: var(--secondary-color);
-  font-weight: bold;
-
-}
-
-.msg-status-in-progress {
-  background-color: #ffcc00;
-  color: var(--secondary-color);
-  font-weight: bold;
-
-}
-
-.msg-status-default {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
-  font-weight: bold;
+.messages-table th.message-action-header {
+  text-align: center;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import useAuth from "../../services/authService";
 import useMessages from "../../services/messageService";
 import "../../styles/message.css";
@@ -6,6 +6,7 @@ import { navigate } from "gatsby";
 import AtomSpinner from "../components/Spinner";
 import ConversationModal from "../components/Conversation";
 import useUsers from "../../services/userService";
+import { FaTrash } from "react-icons/fa"; // Import the trash icon
 
 const AdminMessagesPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -56,10 +57,8 @@ const AdminMessagesPage = () => {
     }
   };
 
-  // Combine the loading states into one check
   const isLoading = authLoading || messagesLoading || userLoading;
 
-  // Check if there is a next page available
   const totalMessages = messages.length;
   const totalPages = Math.ceil(totalMessages / limit);
   const hasNextPage = currentPage < totalPages;
@@ -100,70 +99,71 @@ const AdminMessagesPage = () => {
           placeholder="ID de l'utilisateur"
         />
       </div>
+      <div className="table-container">
+        <table className="messages-table">
+          <thead>
+            <tr>
+              <th>Expéditeur</th>
+              <th className="message-title-header">Titre</th>
+              <th className="message-content-header">Message</th>
+              <th className="message-action-header">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {messages.map((msg) => {
+              const nameSender =
+                user.role !== "admin"
+                  ? `Admin : ${msg.admin?.name}`
+                  : msg.user?.name || "Utilisateur inconnu";
 
-      <table className="messages-table">
-        <thead>
-          <tr>
-            <th>Expéditeur</th>
-            <th>Titre</th>
-            <th>Message</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {messages.map((msg) => {
-            const nameSender =
-              user.role !== "admin"
-                ? `Admin : ${msg.admin?.name}`
-                : msg.user?.name || "Utilisateur inconnu"; // Fallback if msg.user is undefined
+              return (
+                <tr key={msg.id}>
+                  <td>{nameSender}</td>
+                  <td className="message-title">{msg.title}</td>
+                  <td className="message-content">{msg.content}</td>
+                  <td className="actions">
+                    <div
+                      className={`msg-status ${
+                        msg.status === "Nouveau"
+                          ? "msg-status-new"
+                          : msg.status === "En cours"
+                          ? "msg-status-in-progress"
+                          : "msg-status-default"
+                      }`}
+                    >
+                      {msg.status}
+                    </div>
 
-            return (
-              <tr key={msg.id}>
-                <td>{nameSender}</td>
-                <td className="message-title">{msg.title}</td>
-                <td className="message-content">{msg.content}</td>
-                <td className="actions">
-                  <div
-                    className={`msg-status ${
-                      msg.status === "Nouveau"
-                        ? "msg-status-new"
-                        : msg.status === "En cours"
-                        ? "msg-status-in-progress"
-                        : "msg-status-default"
-                    }`}
-                  >
-                    {msg.status}
-                  </div>
+                    <button
+                      className="btn btn-reply"
+                      onClick={() => {
+                        setModalUserId(msg.userId);
+                        setIsModalOpen(true);
+                        updateMessageStatus(msg.id, "En cours");
+                        setConversationId(msg.conversationId);
+                      }}
+                    >
+                      {msg.status === "Nouveau"
+                        ? "Voir le message"
+                        : "Répondre"}
+                    </button>
 
-                  <button
-                    className="btn btn-reply"
-                    onClick={() => {
-                      setModalUserId(msg.userId);
-                      setIsModalOpen(true);
-                      updateMessageStatus(msg.id, "En cours");
-                      setConversationId(msg.conversationId);
-                    }}
-                  >
-                    {msg.status === "Nouveau" ? "Voir le message" : "Répondre"}
-                  </button>
+                    <FaTrash
+                      className="icon-delete"
+                      onClick={() => deleteMessage(msg.id)}
+                      disabled={
+                        msg.status === "Nouveau" || msg.status === "En cours"
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-                  <button
-                    className="btn btn-delete"
-                    onClick={() => deleteMessage(msg.id)}
-                    disabled={
-                      msg.status === "Nouveau" || msg.status === "En cours"
-                    }
-                  >
-                    Supprimer
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div className="pagination">
+      <div className="pagination-messages">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -173,7 +173,7 @@ const AdminMessagesPage = () => {
         <span>Page {currentPage}</span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={!hasNextPage} // Disable "Suivant" if there is no next page
+          disabled={!hasNextPage}
         >
           Suivant
         </button>

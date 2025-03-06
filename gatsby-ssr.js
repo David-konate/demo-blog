@@ -4,7 +4,6 @@ import { MediaProvider } from "./src/context/media-context";
 import { CategoryProvider } from "./src/context/categories-context";
 import { AuthProvider } from "./src/context/use-user-contexte";
 import { MessageProvider } from "./src/context/use-message-context";
-import { CookieProvider } from "./src/context/use-cookie-context";
 import CookiesModal from "./src/pages/components/Cookie"; // Importer le modal des cookies
 import Cookies from "js-cookie";
 
@@ -32,18 +31,16 @@ export const wrapRootElement = ({ element }) => {
 
   return (
     <AuthProvider>
-      <CookieProvider>
-        <CategoryProvider>
-          <ArticleProvider>
-            <MessageProvider>
-              <MediaProvider>
-                {showModal && <CookiesModal onClose={handleCloseModal} />}
-                {element}
-              </MediaProvider>
-            </MessageProvider>
-          </ArticleProvider>
-        </CategoryProvider>
-      </CookieProvider>
+      <CategoryProvider>
+        <ArticleProvider>
+          <MessageProvider>
+            <MediaProvider>
+              {showModal && <CookiesModal onClose={handleCloseModal} />}
+              {element}
+            </MediaProvider>
+          </MessageProvider>
+        </ArticleProvider>
+      </CategoryProvider>
     </AuthProvider>
   );
 };

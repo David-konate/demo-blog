@@ -9,14 +9,14 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     userCount,
-    getUserFromStorage,
-    getUserCount,
     register,
     login,
     loginWithGoogle,
     checkAuth,
     logout,
     isLoggedIn,
+    updateUserPreferences,
+    updateNewsletterSubscription,
   } = useAuth();
 
   return (
@@ -26,14 +26,14 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         userCount,
-        getUserFromStorage,
-        getUserCount,
         register,
         login,
         loginWithGoogle,
         checkAuth,
         logout,
         isLoggedIn,
+        updateUserPreferences,
+        updateNewsletterSubscription,
       }}
     >
       {children}

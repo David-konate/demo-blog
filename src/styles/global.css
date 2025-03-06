@@ -398,7 +398,6 @@ section {
   color: white;
   padding: 20px;
   width: 100%;
-  
 }
 
 .footer-grid {
@@ -407,6 +406,7 @@ section {
   align-items: center;
   width: 100%;
 }
+
 .copyright {
   margin-left: auto;
   text-align: right;
@@ -440,10 +440,17 @@ section {
   transform: scale(1.1);
 }
 
-.footer-grid {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Responsivité pour les petits écrans */
+@media (max-width: 768px) {
+  .footer-grid {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .copyright {
+    margin-top: 20px;
+    text-align: left;
+  }
 }
 
 
