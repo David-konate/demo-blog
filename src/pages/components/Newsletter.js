@@ -35,13 +35,8 @@ const Newsletter = ({ onClose }) => {
 
     try {
       // S'assurer que content est une chaîne
-      const formattedValues = {
-        title: values.title,
-        content: String(values.content), // Forcer le message à être une chaîne
-      };
 
-      await sendNewsletter(user.id, formattedValues);
-      console.log("Message envoyé avec succès :", formattedValues);
+      await sendNewsletter(user.id, values.title, String(values.content));
 
       resetForm(); // Réinitialise le formulaire après l'envoi
     } catch (error) {

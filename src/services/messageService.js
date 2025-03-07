@@ -13,11 +13,12 @@ const useMessages = () => {
   const sendMessage = async (userId, { title, content }) => {
     setLoading(true);
     try {
-      const response = await trackerApi.post("/messages/send", {
+      const response = await trackerApi.post(
+        "/messages/send",
         userId,
         title, // 🔹 Assurer l'envoi du titre
-        content: String(content), // 🔹 Convertir en chaîne au cas où
-      });
+        String(content) // 🔹 Convertir en chaîne au cas où
+      );
 
       setMessages((prev) => [...prev, response.data.data]); // 🔹 Ajouter uniquement le message
     } catch (error) {
@@ -242,11 +243,12 @@ const useMessages = () => {
   };
 
   // 🔹 Envoyer une newsletter à tous les utilisateurs ayant accepté
-  const sendNewsletter = async (title, content) => {
+  const sendNewsletter = async (userId, title, content) => {
     setLoading(true);
 
     try {
       const response = await trackerApi.post("/messages/send/newsletter", {
+        userId,
         title,
         content, // Le contenu de la newsletter
       });

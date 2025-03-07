@@ -8,7 +8,7 @@ import useMessage from "../../services/messageService";
 
 const ContactModalAdmin = ({ onClose }) => {
   const { sendMessage } = useMessage();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
 
   const handleCall = () => {
     if (window && window.navigator) {
@@ -26,6 +26,7 @@ const ContactModalAdmin = ({ onClose }) => {
 
   // Gestion de la soumission du formulaire
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
+    console.log({ user });
     if (!user || !user.id) {
       console.error("Utilisateur non authentifié !");
       return;
