@@ -7,7 +7,7 @@ import Alert from "./components/Alert";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Layout from "./components/layout";
-
+import "../styles/create-category.css";
 const CreateCategoryPage = () => {
   const {
     categories,
@@ -132,7 +132,7 @@ const CreateCategoryPage = () => {
   if (error) return <div className="error-text">Erreur : {error}</div>;
 
   return (
-    <div className="page-wrapper">
+    <div className="page-category">
       <div className="category-section">
         <h1 className="title">Toutes les catégories</h1>
         <input
@@ -165,6 +165,7 @@ const CreateCategoryPage = () => {
 
         <div className="pagination">
           <button
+            className="btn-pagination"
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
           >
@@ -172,8 +173,13 @@ const CreateCategoryPage = () => {
           </button>
           <span>{currentPage}</span>
           <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            className="btn-pagination"
+            onClick={() => {
+              if (currentPage < totalPages) {
+                setCurrentPage(currentPage + 1);
+              }
+            }}
+            disabled={currentPage >= totalPages}
           >
             Suivant
           </button>

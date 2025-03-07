@@ -10,8 +10,10 @@ import { navigate } from "gatsby";
 import Spinner from "./components/Spinner";
 import { Helmet } from "react-helmet";
 import useCategories from "../services/categoryService";
+import useAuth from "../services/authService";
 
 const AllArticles = () => {
+  const { user } = useAuth();
   const {
     articles,
     fetchArticles,
@@ -20,50 +22,54 @@ const AllArticles = () => {
     deleteArticle,
     loading,
   } = useArticles();
-  const { getCategories, categories } = useCategories();
 
-  const [selectedCategory, setSelectedCategory] = useState("Tous");
+  const { categories, getCategories } = useCategories();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); // Stocke l'ID de la catégorie
   const articlesPerPage = 3;
-  const [displayedArticles, setDisplayedArticles] = useState([]);
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchArticles(
-        currentPage,
-        selectedCategory !== "Tous" ? selectedCategory : ""
-      );
-      await getArticleCountByCategory();
-      await getCategories();
-    };
-
-    fetchData();
-  }, [currentPage, selectedCategory]);
+    // Charger les catégories disponibles
+    getCategories();
+  }, []);
 
   useEffect(() => {
-    setDisplayedArticles(articles);
-  }, [articles]);
+    // Effectuer l'appel avec l'ID de la catégorie sélectionnée
+    fetchArticles(
+      currentPage,
+      selectedCategory, // Passer l'ID de la catégorie
+      searchQuery,
+      "",
+      articlesPerPage
+    );
+    getArticleCountByCategory(); // Met à jour le nombre d'articles par catégorie
+  }, [currentPage, selectedCategory, searchQuery, user]); // On ré-exécute l'effet chaque fois qu'une des dépendances change
 
   const totalArticles = categoriesCount.reduce(
     (total, { count }) => total + count,
     0
   );
 
+  // Catégories avec le nombre d'articles associés
   const categoryCounts = categoriesCount.reduce((acc, { count, category }) => {
     acc[category] = count;
     return acc;
   }, {});
 
+  // Création de la liste des catégories et leur nombre d'articles
   const categoriesAll = [
-    "Tous",
-    ...categoriesCount.map(({ category }) => category),
+    { id: "", label_category: "Tous" }, // Ajouter une option "Tous" avec l'ID vide
+    ...categories.map((cat) => ({
+      id: cat.id, // Utilisation de l'ID de la catégorie
+      label_category: cat.label_category, // Le label qui sera affiché
+    })),
   ];
 
   const totalPages = Math.ceil(
-    (categoryCounts[selectedCategory] || articles.length || totalArticles) /
-      articlesPerPage
+    (categoryCounts[selectedCategory] || totalArticles) / articlesPerPage
   );
 
   const handleDeleteRequest = (article) => {
@@ -80,15 +86,6 @@ const AllArticles = () => {
     navigate("/blog-update", { state: { slug: article.slug } });
   };
 
-  const handlePageChange = (page) => {
-    if (page === "prev" && currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    } else if (page === "next" && currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    } else if (typeof page === "number") {
-      setCurrentPage(page);
-    }
-  };
   return loading ? (
     <Layout>
       <Spinner />
@@ -97,51 +94,42 @@ const AllArticles = () => {
     <Layout>
       <Helmet>
         <title>Notre Blog - Articles sur la Tech, le Sport et plus</title>
-        <meta
-          name="description"
-          content="Découvrez une variété d'articles sur le développement, la tech, le sport, la culture et bien plus encore."
-        />
-        <meta
-          name="keywords"
-          content="blog, tech, développement, sport, culture, articles, web"
-        />
-        <meta name="author" content="Ton Nom" />
       </Helmet>
       <div className="blog-container">
         <div className="blog-header">
           <h1>Notre blog</h1>
-          <p>
-            Découvrez ici tous mes articles ainsi que des contenus variés sur le
-            développement, la tech, le sport, la culture et bien plus encore.
-          </p>
           <div className="category-filters">
-            {categoriesAll.map((category, index) => (
-              <ButtonFilter
-                key={index}
-                isActive={selectedCategory === category}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  setCurrentPage(1);
-                }}
-              >
-                {category} (
-                {category === "Tous"
+            {categoriesAll.map((category) => {
+              // Calcul du nombre d'articles pour chaque catégorie
+              const categoryCount =
+                category.id === "" // Si "Tous", on prend le total des articles
                   ? totalArticles
-                  : categoryCounts[category] || 0}
-                )
-              </ButtonFilter>
-            ))}
+                  : categoryCounts[category.id] || 0;
+
+              return (
+                <ButtonFilter
+                  key={category.id}
+                  isActive={selectedCategory === category.id} // Vérifier si l'ID est sélectionné
+                  onClick={() => {
+                    setSelectedCategory(category.id); // Mettre à jour l'ID de la catégorie sélectionnée
+                    setCurrentPage(1); // Réinitialiser la page à 1
+                  }}
+                >
+                  {category.label_category} ({categoryCount})
+                </ButtonFilter>
+              );
+            })}
           </div>
         </div>
 
         <div className="blog-content">
-          {loading ? (
-            <p className="loading-text">Chargement des articles...</p>
+          {articles.length === 0 ? (
+            <p className="loading-text">Aucun article trouvé.</p>
           ) : (
             <div className="articles-grid">
-              {displayedArticles.map((post) => {
+              {articles.map((post) => {
                 const categoryObj = categories.find(
-                  (cat) => cat.id.toString() === post.category
+                  (cat) => cat.id === post.category // Trouver la catégorie en fonction de l'ID
                 );
 
                 return (
@@ -168,29 +156,23 @@ const AllArticles = () => {
 
           <div className="pagination">
             <button
-              className="page-btn"
-              onClick={() => handlePageChange("prev")}
+              className="btn-pagination"
               disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
             >
-              <FaAngleLeft />
+              <FaAngleLeft /> Précédent
             </button>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index}
-                className={`page-number ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
+            <span className="pagination-info">
+              Page {currentPage} / {totalPages || 1}
+            </span>
             <button
-              className="page-btn"
-              onClick={() => handlePageChange("next")}
-              disabled={currentPage === totalPages}
+              className="btn-pagination"
+              disabled={currentPage >= totalPages}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              }
             >
-              <FaAngleRight />
+              Suivant <FaAngleRight />
             </button>
           </div>
         </div>

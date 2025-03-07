@@ -4,8 +4,8 @@ import { navigate } from "gatsby";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-const TOKEN_KEY =
-  "6e025402321a87b4e9f4729421059d34a0a40bda09a63c2ef6c84968f4f1b36bc471188416a4831e12f7b6f4738a13c6243ae6c2b3033ee25c6c85d74b351b2a";
+const TOKEN_KEY = process.env.GATSBY_TOKEN_KEY;
+
 const isBrowser = () => typeof window !== "undefined";
 
 const getLocalData = (key) =>
@@ -47,7 +47,7 @@ const useAuth = () => {
       });
       Cookies.set(TOKEN_KEY, response.data.token, { expires: 7 });
       setUser(response.data.user);
-      navigate("/");
+      navigate("/app/admin");
     } catch (err) {
       console.error("Erreur d'inscription :", err);
       setState((prev) => ({ ...prev, error: "Erreur lors de l'inscription" }));
@@ -89,7 +89,7 @@ const useAuth = () => {
       Cookies.set(TOKEN_KEY, res.data.token, { expires: 7 });
       setUser(res.data.user);
       await checkAuth();
-      navigate("/");
+      navigate("/app/admin");
     } catch (err) {
       console.error("Erreur de connexion Google :", err);
       setState((prev) => ({

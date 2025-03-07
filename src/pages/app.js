@@ -10,6 +10,7 @@ import CreateArticlePage from "./blog-post-create";
 import Parametres from "./params";
 import AdminMessagesPage from "./admin/message";
 import NotFoundPage from "./404";
+import AllArticles from "./admin/all-articles";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <PrivateRoute path="/admin" component={Admin} />
         <PrivateRoute path="/messages" component={AdminMessagesPage} />
         <PrivateRoute path="admin/params" component={Parametres} />
+        <PrivateRoute path="all-articles" component={AllArticles} />
         <Login path="/login" />
         <NotFoundPage default />
       </Router>

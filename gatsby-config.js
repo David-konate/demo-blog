@@ -8,6 +8,12 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: `gatsby-plugin-env-variables`,
+      options: {
+        allowList: ["TOKEN_KEY"], // Liste des variables d'environnement que tu veux exposer
+      },
+    },
+    {
       resolve: "gatsby-plugin-google-gtag",
       options: {
         trackingIds: ["G-HYKSR2S2ZY"],

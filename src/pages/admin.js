@@ -20,12 +20,13 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      getUserCount();
       if (user.role === "admin") {
-        getUserCount();
         articlesCount();
         getUnreadMessages();
         getMessageCountByStatus();
       } else {
+        getMessageCountByStatus(null, user.id);
       }
     };
     fetchData();
@@ -64,7 +65,7 @@ const Admin = () => {
       return `${countMessage.EnCours} En cours`; // Affiche le nombre de messages "En cours"
     }
 
-    return "Messages"; // Si aucun message non lu ni en cours, affiche "Messages"
+    return "0"; // Si aucun message non lu ni en cours, affiche "Messages"
   };
 
   const deleteMessage = (messageId) => {
@@ -98,7 +99,7 @@ const Admin = () => {
       </section>
 
       <div className="admin-statistics">
-        <article onClick={() => navigate("/articles")}>
+        <article onClick={() => navigate("/app/all-articles")}>
           <FaNewspaper size={48} className="admin-icon" />
           <p className="title">{user.articles?.length ?? 0}</p>
           <p className="subtitle">Articles</p>
@@ -117,24 +118,34 @@ const Admin = () => {
           <FaEnvelope
             size={48}
             className={`admin-icon ${
-              getMessageCount().includes("Non lu")
+              getMessageCount() === "0"
+                ? "icon-status-empty"
+                : getMessageCount().includes("Non lu")
                 ? "icon-status-new"
                 : getMessageCount().includes("En cours")
                 ? "icon-status-in-progress"
                 : "icon-status-default"
             }`}
           />
-          <p className="title">{getMessageCount()}</p>
+
+          <p className="title">{getMessageCount() ?? 0}</p>
           <p className="subtitle">Messages</p>
         </article>
+        <article
+          onClick={user?.role === "admin" ? () => navigate("/users") : null}
+          className={user?.role !== "admin" ? "message-status-disabled" : ""}
+        >
+          <FaUser size={48} className="admin-icon" />
+          <p className="title">{userCount ?? 0}</p>
+          <p className="subtitle">Utilisateurs</p>
 
-        {user?.role === "admin" && (
-          <article onClick={() => navigate("/users")}>
-            <FaUser size={48} className="admin-icon" />
-            <p className="title">{userCount ?? 0}</p>
-            <p className="subtitle">Utilisateurs</p>
-          </article>
-        )}
+          {/* Badge indiquant que cette section est réservée aux administrateurs */}
+          {user?.role !== "admin" && (
+            <span className="admin-only-badge">
+              Réservé aux administrateurs
+            </span>
+          )}
+        </article>
       </div>
 
       {/* Affichage des messages avec nom d'utilisateur et suppression */}

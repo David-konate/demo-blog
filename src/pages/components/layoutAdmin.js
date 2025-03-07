@@ -5,6 +5,7 @@ import SideBar from "./SideBarCRM";
 import NavbarAdmin from "./NavBarAdmin";
 import CookiesModal from "./Cookie";
 import useAuth from "../../services/authService";
+import { navigate } from "gatsby";
 
 export function useMedia(query) {
   const [matches, setMatches] = useState(
@@ -35,6 +36,8 @@ const LayoutAdmin = ({ children }) => {
   useEffect(() => {
     if (user && user.loginCount === 1) {
       setIsCookiesModalOpen(true); // Open the modal if user.logincount === 1
+    } else if (!user) {
+      navigate("/login");
     }
   }, [user]);
 

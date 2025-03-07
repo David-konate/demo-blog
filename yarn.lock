@@ -5713,6 +5713,11 @@ gatsby-plugin-create-client-paths@^4.9.0:
   dependencies:
     "@babel/runtime" "^7.15.4"
 
+gatsby-plugin-env-variables@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/gatsby-plugin-env-variables/-/gatsby-plugin-env-variables-2.3.0.tgz#bc47617bd78f8f68ff72b3c4c7a2ae7ae464fbc1"
+  integrity sha512-HvVzuapa1jZ0fHtvw4hRlu3Zi5boPLYejVkULnzSmzpSz6UrIj88eEk8WaiKrxkp0CDK9VmXweAdx6U3AwgCog==
+
 gatsby-plugin-google-gtag@^5.14.0:
   version "5.14.0"
   resolved "https://registry.npmjs.org/gatsby-plugin-google-gtag/-/gatsby-plugin-google-gtag-5.14.0.tgz#89f520481e20cc0830a52334f7f19d08be547d11"

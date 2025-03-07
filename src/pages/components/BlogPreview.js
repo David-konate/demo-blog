@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "gatsby";
 import { useArticleContext } from "../../context/use-article-context";
+import useCategories from "../../services/categoryService";
+import useAuth from "../../services/authService";
 
 // Fonction pour vérifier si la date est valide
 const isValidDate = (dateString) => {
@@ -10,6 +12,8 @@ const isValidDate = (dateString) => {
 
 const BlogPreview = () => {
   const { articlePreview } = useArticleContext();
+  const { categories } = useCategories();
+  const { user } = useAuth();
 
   if (!articlePreview) return <p>Aucun aperçu disponible</p>;
 
@@ -19,16 +23,24 @@ const BlogPreview = () => {
       ? new Intl.DateTimeFormat("fr-FR").format(Date.parse(articlePreview.date))
       : "Date inconnue";
 
+  // Trouver la catégorie correspondant à l'ID
+  const category = categories.find(
+    (cat) => cat.id === parseInt(articlePreview.category)
+  );
+
+  // Afficher le label_category de la catégorie si trouvé, sinon afficher "Inconnue"
+  const categoryLabel = category ? category.label_category : "Inconnue";
+
   return (
     <div className="card">
       <div className="card-image">
         <img src={articlePreview.image} alt={articlePreview.title} />
-        <div className="card-badge">{articlePreview.category || "Events"}</div>
+        <div className="card-badge">{categoryLabel}</div>
       </div>
 
       <div className="card-content">
         <div className="card-info">
-          Par {articlePreview.author} le {formattedDate}
+          Par {user.name} le {formattedDate}
         </div>
         <div className="card-footer">
           <h2 className="card-title">{articlePreview.title}</h2>

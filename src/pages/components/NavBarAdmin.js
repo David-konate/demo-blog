@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "gatsby";
+import React, { useEffect, useState } from "react";
+import { Link, navigate } from "gatsby";
 import {
   FaBasketballBall,
   FaExternalLinkAlt,
@@ -18,6 +18,16 @@ const NavbarAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth(); // Récupération de l'utilisateur connecté
+
+  useEffect(() => {
+    if (user === null) {
+      navigate("login"); // Redirection si l'utilisateur est non authentifié
+    }
+  }, [user]);
+
+  if (user === null) {
+    return null; // Retourner rien tant que l'utilisateur est null et qu'on attend la redirection
+  }
 
   const handleModalOpen = () => {
     if (user.role === "admin") {

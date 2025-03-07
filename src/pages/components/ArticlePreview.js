@@ -2,9 +2,11 @@ import React from "react";
 import Showdown from "showdown";
 import { useArticleContext } from "../../context/use-article-context";
 import "../../styles/blog-post.css";
+import useAuth from "../../services/authService";
 
 const ArticlePreview = () => {
   const { articlePreview } = useArticleContext();
+  const { user } = useAuth();
 
   if (!articlePreview) return <p>Aucun aperçu disponible</p>;
   console.log("Contenu de l'aperçu:", articlePreview.content);
@@ -84,7 +86,7 @@ const ArticlePreview = () => {
             {articlePreview.title || "Titre de l'article"}
           </h1>
           <p className="article-preview-author">
-            Par {articlePreview.author || "Auteur"} le {formattedDate}
+            Par {user.name || "Auteur"} le {formattedDate}
           </p>
         </div>
       </header>

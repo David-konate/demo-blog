@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { marked } from "marked";
 import trackerApi from "../api/tracker";
+import useAuth from "./authService";
 import { navigate } from "@reach/router";
 const useArticles = () => {
   const [categoriesCount, setCategoriesCount] = useState([]);
@@ -11,21 +12,35 @@ const useArticles = () => {
   const [error, setError] = useState(null);
   const [markdown, setMarkdown] = useState("");
   const [articlePreview, setArticlePreview] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useState();
+  const { user } = useAuth(); // Récupérer l'utilisateur connecté
 
-  useEffect(() => {
-    // fetchArticles();
-  }, []);
-
-  const fetchArticles = async (page = 1, category = "") => {
+  const fetchArticles = async (
+    page = 1,
+    category = "",
+    searchQuery = "",
+    userId = "",
+    limit = 3 // Ajout du paramètre limit
+  ) => {
     setLoading(true);
-    const cacheKey = `articles_page_${page}_category_${category}`;
+    const cacheKey = `articles_page_${page}_category_${category}_search_${searchQuery}_userId_${userId}_limit_${limit}`;
 
     try {
-      // Requête API
-      const queryParams = new URLSearchParams({ page, category }).toString();
-      // const response = await fetch(
-      //   `https://blog-api.david-konate.fr/api/articles?${queryParams}`
-      // );
+      // Construire les paramètres de la requête
+      const queryParams = new URLSearchParams({
+        page,
+        category,
+        search: searchQuery,
+        userId,
+        limit, // Ajout de limit dans la requête
+      }).toString();
+
+      console.log(
+        "🔎 Requête envoyée :",
+        `http://localhost:3000/api/articles?${queryParams}`
+      );
+
       const response = await fetch(
         `http://localhost:3000/api/articles?${queryParams}`
       );
@@ -35,17 +50,21 @@ const useArticles = () => {
       }
 
       const data = await response.json();
+      const { data: articles, total, currentPage, totalPages } = data;
 
-      // Récupération et traitement du contenu Markdown
+      console.log("📌 Articles récupérés :", articles.length, "articles");
+
+      // Vérification et chargement du contenu Markdown
       const articlesWithContent = await Promise.all(
-        data.data.map(async (article) => {
+        articles.map(async (article) => {
           try {
             if (!article.fileUrl) {
               console.warn(
-                `⚠️ Pas de fichier Markdown pour l'article ${article.slug}`
+                `⚠ Pas de fichier Markdown pour l'article ${article.slug}`
               );
               return { ...article, content: "Contenu indisponible" };
             }
+
             const content = await fetch(article.fileUrl).then((res) =>
               res.text()
             );
@@ -65,7 +84,7 @@ const useArticles = () => {
             };
           } catch (error) {
             console.error(
-              `❌ Erreur lors du chargement du contenu Markdown de ${article.slug}`,
+              `❌ Erreur chargement Markdown de ${article.slug}`,
               error
             );
             return {
@@ -75,9 +94,12 @@ const useArticles = () => {
           }
         })
       );
-      // Mise en cache et mise à jour de l'état
+
+      // Mise en cache et mise à jour des états
       sessionStorage.setItem(cacheKey, JSON.stringify(articlesWithContent));
       setArticles(articlesWithContent);
+      setTotalPages(totalPages);
+      setCurrentPage(currentPage);
     } catch (error) {
       console.error("❌ Erreur lors de la récupération des articles :", error);
       setError(error.message);
@@ -166,7 +188,7 @@ const useArticles = () => {
   }) => {
     return `---
   title: ${title}
-  author: ${author}
+  author: ${user.id}
   date: ${date}
   category: ${category}
   image: "${image}"
@@ -224,7 +246,7 @@ const useArticles = () => {
       throw error;
     } finally {
       setLoading(false);
-      navigate("/blog-list/");
+      navigate("/app/all-articles");
     }
   };
 
@@ -411,6 +433,8 @@ const useArticles = () => {
     loading,
     categoriesCount,
     articleCount,
+    totalPages,
+    currentPage,
     setArticleCount,
     articlesCount,
     articleCount,

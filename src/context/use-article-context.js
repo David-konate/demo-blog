@@ -11,6 +11,7 @@ export const ArticleProvider = ({ children }) => {
     error, // Erreur si quelque chose ne va pas lors de la récupération des articles
     markdown, // Contenu markdown de l'article sélectionné
     setMarkdown,
+    totalPages,
     fetchArticleBySlug, // Fonction pour récupérer un article spécifique par son slug
     saveArticle, // Fonction pour enregistrer un article
     saveImages, // Fonction pour enregistrer les images liées à un article
@@ -24,6 +25,7 @@ export const ArticleProvider = ({ children }) => {
     fetchArticles,
     deleteArticle,
     updateArticle,
+    currentPage,
     categoriesCount,
     getArticleCountByCategory,
   } = useArticles();
@@ -36,6 +38,8 @@ export const ArticleProvider = ({ children }) => {
         loading,
         error,
         markdown,
+        totalPages,
+        currentPage,
         setMarkdown,
         fetchArticleBySlug,
         saveArticle,

@@ -480,3 +480,62 @@ section {
 }
 
 
+.btn-pagination {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--btn-text-color);
+  background: var(--btn-bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px var(--box-shadow-color);
+}
+
+.btn-pagination:hover {
+  background: var(--btn-hover-gradient);
+  transform: scale(1.05);
+  box-shadow: 0px 6px 12px var(--box-shadow-special);
+}
+
+.btn-pagination:disabled {
+  background: var(--focus-background);
+  color: var(--border-color);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Version active */
+.btn-pagination.active {
+  background: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+/* Mode sombre */
+.dark-mode .btn-pagination {
+  background: var(--btn-bg);
+  box-shadow: 0px 4px 8px var(--box-shadow-special);
+}
+
+.dark-mode .btn-pagination:hover {
+  background: var(--btn-hover-gradient);
+}
+
+
+.pagination-info {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color); /* Use default text color */
+  text-align: center; /* Centers the pagination text */
+  margin: 20px 0; /* Adds vertical spacing around the pagination info */
+}
+
+.dark-mode .pagination-info {
+  color: var(--text-color); /* Color of text in dark mode */
+  font-weight: 500;
+}

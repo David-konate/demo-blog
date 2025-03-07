@@ -1,0 +1,59 @@
+.filters {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-background);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    border-color: var(--primary-color);
+    background-color: var(--focus-background);
+    outline: none;
+  }
+  
+  .category-filter {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-background);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+  
+  .category-filter:focus {
+    border-color: var(--primary-color);
+    background-color: var(--focus-background);
+    outline: none;
+  }
+  
+  /* Styles pour les cartes d'articles */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .articles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+  }

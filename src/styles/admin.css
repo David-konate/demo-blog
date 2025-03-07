@@ -35,7 +35,9 @@
   width: 100%;
   max-width: 1200px;
 }
-
+.admin-statistics article {
+  cursor: pointer;
+}
 /* Cartes des statistiques */
 .admin-statistics article {
   background: var(--modal-background);
@@ -148,7 +150,28 @@
 }
 
 /* Couleur grise pour les messages "Nouveau" ou "En cours" */
+/* Griser l'élément et le rendre inutilisable */
 .message-status-disabled {
   filter: grayscale(100%);
   opacity: 0.6;
+  pointer-events: none;
+  position: relative;
 }
+
+/* Badge pour indiquer que l'élément est réservé aux administrateurs */
+.admin-only-badge {
+  display: inline-block;
+  background-color: #ff4d4d;
+  color: white;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin-top: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  bottom: -20px;  /* Positionné en bas de l'élément */
+  left: 50%;
+  transform: translateX(-50%);
+}
+

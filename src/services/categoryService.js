@@ -85,16 +85,17 @@ const useCategories = () => {
     }
   };
 
-  // Utiliser useEffect pour charger les catégories au démarrage si nécessaire
-  useEffect(() => {
-    getCategories();
-  }, []);
+  // // Utiliser useEffect pour charger les catégories au démarrage si nécessaire
+  // useEffect(() => {
+  //   getCategories();
+  // }, []);
 
   return {
     categories,
     category,
     loading,
     error,
+    setCategory,
     getCategories,
     getCategoryById,
     createCategory,

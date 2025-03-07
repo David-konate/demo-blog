@@ -24,7 +24,7 @@ const SideBar = () => {
         <p className="menu-label">Administration</p>
         <ul className="menu-list">
           <li>
-            <Link to="/app/allArticles">Articles</Link>
+            <Link to="/app/all-articles">Articles</Link>
           </li>
           <li>
             <Link to="/app/categories">Categories</Link>

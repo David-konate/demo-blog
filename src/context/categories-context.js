@@ -8,7 +8,8 @@ export const CategoryProvider = ({ children }) => {
     categories, // Liste des catégories récupérées
     category, // Catégorie spécifique actuellement sélectionnée
     loading, // Indicateur de chargement pour les catégories
-    error, // Erreur si quelque chose ne va pas lors de la récupération des catégories
+    error,
+    setCategory,
     createCategory, // Fonction pour créer une nouvelle catégorie
     deleteCategory, // Fonction pour supprimer une catégorie
     updateCategory, // Fonction pour mettre à jour une catégorie
@@ -23,6 +24,7 @@ export const CategoryProvider = ({ children }) => {
         category,
         loading,
         error,
+        setCategory,
         createCategory,
         deleteCategory,
         updateCategory,

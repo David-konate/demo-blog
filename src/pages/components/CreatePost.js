@@ -181,19 +181,7 @@ const CreatePost = () => {
                     component="div"
                     className="error"
                   />
-                  <label>Auteur</label>
-                  <Field
-                    name="author"
-                    type="text"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setFieldValue("author", value);
-                      setFormValues((prev) => ({
-                        ...prev,
-                        author: value,
-                      }));
-                    }}
-                  />
+
                   <ErrorMessage
                     name="author"
                     component="div"
